@@ -27,7 +27,7 @@ import java.util.List;
  * Copyright (c) 2019 Shenzhen O&M Cloud Co., Ltd. All rights reserved.
  */
 public class RMPChart {
-    Chart chart;
+    protected Chart chart;
 
     protected RMPChart(Chart chart) {
         this.chart = chart;
@@ -99,7 +99,7 @@ public class RMPChart {
     }
 
     /**
-     * @see com.github.mikephil.charting.components.Description#setPosition(float, float)
+     * @see Description#setPosition(float, float)
      */
     public RMPChart setDescriptionPosition(float x, float y) {
         chart.getDescription().setPosition(x, y);
@@ -541,7 +541,7 @@ public class RMPChart {
         return this;
     }
 
-    public RMPChart setLineDrawValues(boolean draw) {
+    public RMPChart setDrawLineValues(boolean draw) {
         tempLineDataSet.setDrawValues(draw);
         return this;
     }
@@ -650,7 +650,7 @@ public class RMPChart {
     /**
      * 0-100 的值
      *
-     * @param value Radius * (Value / value)    default 50%
+     * @param value Radius * (Value / 100f)    default 50%
      */
     public RMPChart setDrawPieHoleRadius(float value) {
         if (chart instanceof PieChart) {
