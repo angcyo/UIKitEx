@@ -1,7 +1,12 @@
 package com.angcyo.uikitex.chart;
 
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+
+import java.util.List;
 
 /**
  * Email:angcyo@126.com
@@ -12,6 +17,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
  */
 public class SingleViewPortHandler extends ViewPortHandler {
     SingleBarChartRenderer singleBarChartRenderer;
+    SingleBarChart singleBarChart;
 
     public SingleViewPortHandler() {
 
@@ -21,6 +27,10 @@ public class SingleViewPortHandler extends ViewPortHandler {
         this.singleBarChartRenderer = singleBarChartRenderer;
     }
 
+    public void setSingleBarChart(SingleBarChart singleBarChart) {
+        this.singleBarChart = singleBarChart;
+    }
+
     @Override
     public boolean isFullyZoomedOut() {
         return super.isFullyZoomedOut();
@@ -28,7 +38,28 @@ public class SingleViewPortHandler extends ViewPortHandler {
 
     @Override
     public boolean hasNoDragOffset() {
-        return false;//super.hasNoDragOffset() || false;
+        boolean needDrag = false;
+
+        if (singleBarChart != null) {
+            BarData barData = singleBarChart.getBarData();
+            if (barData != null) {
+                List<IBarDataSet> dataSets = barData.getDataSets();
+                if (!dataSets.isEmpty()) {
+                    IBarDataSet dataSet = dataSets.get(0);
+
+                    if (dataSet.getEntryCount() > 0) {
+                        BarEntry lastEntry = dataSet.getEntryForIndex(dataSet.getEntryCount() - 1);
+
+                        float lastX = singleBarChartRenderer.getEnterCenterX(lastEntry);
+                        if (lastX + singleBarChartRenderer.getBarWidth() / 2 >= contentRight()) {
+                            needDrag = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return super.hasNoDragOffset() && !needDrag;
     }
 
     public float mTransOffsetX = 0f;

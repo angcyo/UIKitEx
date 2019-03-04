@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.view.MotionEvent;
+import android.view.View;
 import com.github.mikephil.charting.charts.*;
 import com.github.mikephil.charting.components.*;
 import com.github.mikephil.charting.data.*;
@@ -474,6 +476,71 @@ public class RMPChart {
      */
     public RMPChart setLegendForm(Legend.LegendForm value) {
         chart.getLegend().setForm(value);
+        return this;
+    }
+
+    public RMPChart setScaleEnabled(boolean value) {
+        if (chart instanceof BarLineChartBase) {
+            ((BarLineChartBase) chart).setScaleEnabled(value);
+        }
+        return this;
+    }
+
+    public RMPChart setScaleXEnabled(boolean value) {
+        if (chart instanceof BarLineChartBase) {
+            ((BarLineChartBase) chart).setScaleXEnabled(value);
+        }
+        return this;
+    }
+
+    public RMPChart setScaleYEnabled(boolean value) {
+        if (chart instanceof BarLineChartBase) {
+            ((BarLineChartBase) chart).setScaleYEnabled(value);
+        }
+        return this;
+    }
+
+    public RMPChart setDoubleTapToZoomEnabled(boolean value) {
+        if (chart instanceof BarLineChartBase) {
+            ((BarLineChartBase) chart).setDoubleTapToZoomEnabled(value);
+        }
+        return this;
+    }
+
+    public RMPChart setDrawBorders(boolean value) {
+        if (chart instanceof BarLineChartBase) {
+            ((BarLineChartBase) chart).setDrawBorders(value);
+        }
+        return this;
+    }
+
+    public RMPChart setHighlightFullBarEnabled(boolean value) {
+        if (chart instanceof BarLineChartBase) {
+            ((BarChart) chart).setHighlightFullBarEnabled(value);
+        }
+        return this;
+    }
+
+    /**
+     * 点击是否高亮
+     *
+     * @see com.github.mikephil.charting.listener.PieRadarChartTouchListener#onSingleTapUp(MotionEvent)
+     * @see com.github.mikephil.charting.listener.BarLineChartTouchListener#onSingleTapUp(MotionEvent)
+     */
+    public RMPChart setHighlightPerTapEnabled(boolean value) {
+        chart.setHighlightPerTapEnabled(value);
+        return this;
+    }
+
+    /**
+     * 点击是否高亮
+     *
+     * @see com.github.mikephil.charting.listener.BarLineChartTouchListener#onTouch(View, MotionEvent)
+     */
+    public RMPChart setHighlightPerDragEnabled(boolean value) {
+        if (chart instanceof BarLineChartBase) {
+            ((BarLineChartBase) chart).setHighlightPerDragEnabled(value);
+        }
         return this;
     }
 

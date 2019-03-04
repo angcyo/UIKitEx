@@ -7,6 +7,7 @@ import com.github.mikephil.charting.buffer.BarBuffer;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.model.GradientColor;
@@ -110,6 +111,11 @@ public class SingleBarChartRenderer extends BarChartRenderer {
             c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
                     buffer.buffer[j + 3], mRenderPaint);
         }
+    }
+
+    @Override
+    public void drawHighlighted(Canvas c, Highlight[] indices) {
+        super.drawHighlighted(c, indices);
     }
 
     //获取entry 对应需要绘制的中心点x坐标

@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.listener.BarLineChartTouchListener;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 
@@ -43,23 +42,18 @@ public class SingleBarChart extends BarChart {
 
         super.init();
 
+        mDoubleTapToZoomEnabled = false;
+        mDrawBorders = false;
+        //setDrawBarShadow(false);
+        //mXAxis.setDrawGridLines(false);
+        //setScaleXEnabled(false);
+        //setScaleYEnabled(false);
+
         mRenderer = new SingleBarChartRenderer(this, mAnimator, mViewPortHandler);
         ((SingleViewPortHandler) mViewPortHandler).setSingleBarChartRenderer((SingleBarChartRenderer) mRenderer);
+        ((SingleViewPortHandler) mViewPortHandler).setSingleBarChart(this);
 
         mXAxisRenderer = new SingleXAxisRenderer(mViewPortHandler, mXAxis, mLeftAxisTransformer, (SingleBarChartRenderer) mRenderer);
-
-
-        mChartTouchListener = new BarLineChartTouchListener(this, mViewPortHandler.getMatrixTouch(), 3f) {
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                return super.onScroll(e1, e2, distanceX, distanceY);
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                return super.onFling(e1, e2, velocityX, velocityY);
-            }
-        };
 
         setOnChartGestureListener(new OnChartGestureListener() {
             @Override
