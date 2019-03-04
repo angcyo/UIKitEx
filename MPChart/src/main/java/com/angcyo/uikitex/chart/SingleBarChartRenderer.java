@@ -7,7 +7,6 @@ import com.github.mikephil.charting.buffer.BarBuffer;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.model.GradientColor;
@@ -26,16 +25,16 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 public class SingleBarChartRenderer extends BarChartRenderer {
     public SingleBarChart singleBarChart;
 
-    public SingleBarChartRenderer(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
-        super(chart, animator, viewPortHandler);
-        singleBarChart = (SingleBarChart) chart;
-    }
-
     //bar 之间的间隙
     public float barSpace = Utils.convertDpToPixel(10f);
 
     //第一个bar 与边缘的距离
     public float startBarSpace = Utils.convertDpToPixel(20f);
+
+    public SingleBarChartRenderer(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
+        super(chart, animator, viewPortHandler);
+        singleBarChart = (SingleBarChart) chart;
+    }
 
     @Override
     protected void drawDataSet(Canvas c, IBarDataSet dataSet, int index) {
@@ -111,11 +110,6 @@ public class SingleBarChartRenderer extends BarChartRenderer {
             c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
                     buffer.buffer[j + 3], mRenderPaint);
         }
-    }
-
-    @Override
-    public void drawHighlighted(Canvas c, Highlight[] indices) {
-        super.drawHighlighted(c, indices);
     }
 
     //获取entry 对应需要绘制的中心点x坐标

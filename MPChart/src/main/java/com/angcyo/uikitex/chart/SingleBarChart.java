@@ -108,4 +108,8 @@ public class SingleBarChart extends BarChart {
             }
         });
     }
+
+    public SingleBarChartRenderer getSingleBarChartRenderer() {
+        return (SingleBarChartRenderer) mRenderer;
+    }
 }
