@@ -14,6 +14,7 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.MPPointF;
+import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.lang.reflect.InvocationTargetException;
@@ -58,6 +59,20 @@ public class RMPChart {
 
         setDrawPieDrawCenterText(false);
         setPieSliceSpace(2f);
+    }
+
+    public RMPChart defaultSingleBarChartStyle() {
+        this
+                .setTouchEnabled(true)
+                .setHighlightPerTapEnabled(false)
+                .setHighlightPerDragEnabled(false)
+                .setDrawBarShadow(false)
+                .setDrawXAxisGridLines(false)
+                .setScaleEnabled(false)
+                .setDoubleTapToZoomEnabled(false)
+                .setDrawBorders(false)
+                .setBarWidth(Utils.convertDpToPixel(20f));
+        return this;
     }
 
     //<editor-fold desc="NoData 和 description 样式">

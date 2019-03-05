@@ -42,14 +42,16 @@ public class SingleXAxisRenderer extends XAxisRenderer {
 
             for (int i = 0; i < dataSet.getEntryCount(); i++) {
                 BarEntry entry = dataSet.getEntryForIndex(i);
-                float enterCenterX = singleBarChartRenderer.getEnterCenterX(entry);
+                float enterCenterX = singleBarChartRenderer.getEntryCenterX(entry);
 
                 if (!mViewPortHandler.isInBoundsLeft(enterCenterX) || !mViewPortHandler.isInBoundsRight(enterCenterX))
                     continue;
 
-                String label = mXAxis.getValueFormatter().getFormattedValue(i, mXAxis);
+                if (singleBarChartRenderer.isInChartBounds(entry)) {
+                    String label = mXAxis.getValueFormatter().getFormattedValue(i, mXAxis);
 
-                drawLabel(c, label, enterCenterX, pos, anchor, labelRotationAngleDegrees);
+                    drawLabel(c, label, enterCenterX, pos, anchor, labelRotationAngleDegrees);
+                }
             }
         }
     }

@@ -2,7 +2,6 @@ package com.angcyo.uikitex.chart;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.listener.ChartTouchListener;
@@ -58,15 +57,14 @@ public class SingleBarChart extends BarChart {
         setOnChartGestureListener(new OnChartGestureListener() {
             @Override
             public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-                Log.i("angcyo", "onChartGestureStart");
+                //Log.i("angcyo", "onChartGestureStart");
                 translateX = endTranslateX;
             }
 
             @Override
             public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
                 //translateX = endTranslateX;
-
-                Log.i("angcyo", "onChartGestureEnd");
+                //Log.i("angcyo", "onChartGestureEnd");
             }
 
             @Override
@@ -86,7 +84,7 @@ public class SingleBarChart extends BarChart {
 
             @Override
             public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
-                Log.i("angcyo", "x1:" + me1.getX() + " x2:" + me2.getX());
+                //Log.i("angcyo", "x1:" + me1.getX() + " x2:" + me2.getX());
             }
 
             @Override
@@ -96,20 +94,25 @@ public class SingleBarChart extends BarChart {
 
             @Override
             public void onChartTranslate(MotionEvent me, float dX, float dY) {
-
                 endTranslateX = translateX + dX;
                 if (endTranslateX > 0) {
                     endTranslateX = 0;
                 } else {
-                    setDragOffsetX(dX);
+                    float maxX = getSingleBarChartRenderer().getMaxX() - getViewPortHandler().contentWidth();
+                    if (endTranslateX < -maxX) {
+                        endTranslateX = -maxX;
+                    }
                 }
-
-                Log.i("angcyo", "dx:" + dX + " dy:" + dY);
             }
         });
     }
 
     public SingleBarChartRenderer getSingleBarChartRenderer() {
         return (SingleBarChartRenderer) mRenderer;
+    }
+
+    public void resetTranslate() {
+        endTranslateX = 0;
+        translateX = 0;
     }
 }

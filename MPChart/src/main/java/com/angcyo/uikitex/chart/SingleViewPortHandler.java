@@ -41,18 +41,24 @@ public class SingleViewPortHandler extends ViewPortHandler {
         boolean needDrag = false;
 
         if (singleBarChart != null) {
-            BarData barData = singleBarChart.getBarData();
-            if (barData != null) {
-                List<IBarDataSet> dataSets = barData.getDataSets();
-                if (!dataSets.isEmpty()) {
-                    IBarDataSet dataSet = dataSets.get(0);
+            //float maxX = singleBarChartRenderer.getMaxX() - singleBarChart.getViewPortHandler().getChartWidth();
+            //needDrag = singleBarChart.endTranslateX < 0 && -maxX < singleBarChart.endTranslateX;
+            needDrag = singleBarChart.endTranslateX != 0;
 
-                    if (dataSet.getEntryCount() > 0) {
-                        BarEntry lastEntry = dataSet.getEntryForIndex(dataSet.getEntryCount() - 1);
+            if (!needDrag) {
+                BarData barData = singleBarChart.getBarData();
+                if (barData != null) {
+                    List<IBarDataSet> dataSets = barData.getDataSets();
+                    if (!dataSets.isEmpty()) {
+                        IBarDataSet dataSet = dataSets.get(0);
 
-                        float lastX = singleBarChartRenderer.getEnterCenterX(lastEntry);
-                        if (lastX + singleBarChartRenderer.getBarWidth() / 2 >= contentRight()) {
-                            needDrag = true;
+                        if (dataSet.getEntryCount() > 0) {
+                            BarEntry lastEntry = dataSet.getEntryForIndex(dataSet.getEntryCount() - 1);
+
+                            float lastX = singleBarChartRenderer.getEntryCenterX(lastEntry);
+                            if (lastX + singleBarChartRenderer.getBarWidth() / 2 >= contentRight()) {
+                                needDrag = true;
+                            }
                         }
                     }
                 }

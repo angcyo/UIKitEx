@@ -15,6 +15,8 @@ import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.util.List;
+
 /**
  * Email:angcyo@126.com
  *
@@ -102,18 +104,20 @@ public class SingleBarChartRenderer extends BarChartRenderer {
                                 android.graphics.Shader.TileMode.MIRROR));
             }
 
-            float enterCenterX = getEnterCenterX(entry);
+            float enterCenterX = getEntryCenterX(entry);
 
             buffer.buffer[j] = enterCenterX - barWidth / 2;
             buffer.buffer[j + 2] = enterCenterX + barWidth / 2;
 
-            c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                    buffer.buffer[j + 3], mRenderPaint);
+            if (isInChartBounds(entry)) {
+                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
+                        buffer.buffer[j + 3], mRenderPaint);
+            }
         }
     }
 
     //获取entry 对应需要绘制的中心点x坐标
-    public float getEnterCenterX(Entry entry) {
+    public float getEntryCenterX(Entry entry) {
         float index = entry.getX();
         float barWidth = getBarWidth();
 
@@ -125,8 +129,56 @@ public class SingleBarChartRenderer extends BarChartRenderer {
                         startBarSpace +
                         barWidth / 2 +
                         barWidth * index +
-                        barSpace * (Math.max(index - 1, 0));
+                        barSpace * (Math.max(index, 0));
         return x;
+    }
+
+    /**
+     * 最后一个entry的 中心点 x坐标
+     */
+    public float getLastEntryCenterX() {
+        float result = -1;
+        BarData barData = singleBarChart.getBarData();
+        if (barData != null) {
+            List<IBarDataSet> dataSets = barData.getDataSets();
+            if (!dataSets.isEmpty()) {
+                IBarDataSet dataSet = dataSets.get(0);
+
+                if (dataSet.getEntryCount() > 0) {
+
+                    int lastIndex = dataSet.getEntryCount() - 1;
+
+                    float barWidth = getBarWidth();
+                    result = mViewPortHandler.contentLeft() +
+                            startBarSpace +
+                            barWidth / 2 +
+                            barWidth * lastIndex +
+                            barSpace * (Math.max(lastIndex, 0));
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * x轴 最大的值
+     */
+    public float getMaxX() {
+        return getLastEntryCenterX() + getBarWidth() / 2;
+    }
+
+    public boolean isInChartBounds(Entry entry) {
+        float enterCenterX = getEntryCenterX(entry);
+        float barWidth = getBarWidth();
+
+        float offsetX = singleBarChart.endTranslateX;
+
+
+        if (enterCenterX - barWidth / 2 >= mViewPortHandler.contentLeft() + offsetX &&
+                enterCenterX + barWidth / 2 <= mViewPortHandler.contentRight()) {
+            return true;
+        }
+        return false;
     }
 
     public float getBarWidth() {
