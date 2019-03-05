@@ -1,5 +1,6 @@
 package com.angcyo.uikitex.chart;
 
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -556,6 +557,14 @@ public class RMPChart {
         if (chart instanceof BarLineChartBase) {
             ((BarLineChartBase) chart).setHighlightPerDragEnabled(value);
         }
+        return this;
+    }
+
+    /**
+     * @see Chart#drawMarkers(Canvas)
+     */
+    public RMPChart setDrawMarkers(boolean value) {
+        chart.setDrawMarkers(value);
         return this;
     }
 

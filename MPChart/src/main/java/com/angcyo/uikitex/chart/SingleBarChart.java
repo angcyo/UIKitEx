@@ -1,11 +1,19 @@
 package com.angcyo.uikitex.chart;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
+
+import java.util.List;
 
 /**
  * Email:angcyo@126.com
@@ -105,6 +113,76 @@ public class SingleBarChart extends BarChart {
                 }
             }
         });
+    }
+
+    @Override
+    public Highlight getHighlightByTouchPoint(float x, float y) {
+        if (getBarData() != null) {
+            List<IBarDataSet> dataSets = getBarData().getDataSets();
+            if (!dataSets.isEmpty()) {
+                IBarDataSet dataSet = dataSets.get(0);
+
+                if (dataSet.getEntryCount() > 0) {
+
+                    float barWidth = getSingleBarChartRenderer().getBarWidth();
+                    float startBarSpace = getSingleBarChartRenderer().startBarSpace;
+                    float barSpace = getSingleBarChartRenderer().barSpace;
+
+                    float left = 0;
+                    float right = 0;
+                    for (int i = 0; i < dataSet.getEntryCount(); i++) {
+                        BarEntry entry = dataSet.getEntryForIndex(i);
+
+                        left = mViewPortHandler.contentLeft() +
+                                startBarSpace +
+                                barWidth * i +
+                                barSpace * (Math.max(i, 0));
+
+                        right = left + barWidth;
+
+                        if (x >= left && x <= right) {
+                            Highlight highlight = new Highlight(entry.getX(), entry.getY(), 0);
+                            //y坐标有问题, 不能用
+                            highlight.setDraw(left + barWidth / 2, entry.getY());
+                            highlight.setDataIndex(i);
+                            return highlight;
+                        }
+                    }
+                }
+            }
+        }
+        return super.getHighlightByTouchPoint(x, y);
+    }
+
+    @Override
+    protected void drawMarkers(Canvas canvas) {
+        super.drawMarkers(canvas);
+
+//        // if there is no marker view or drawing marker is disabled
+//        if (mMarker == null || !isDrawMarkersEnabled() || !valuesToHighlight())
+//            return;
+//
+//        for (int i = 0; i < mIndicesToHighlight.length; i++) {
+//
+//            Highlight highlight = mIndicesToHighlight[i];
+//
+//            IDataSet set = mData.getDataSetByIndex(highlight.getDataSetIndex());
+//
+//            Entry e = mData.getEntryForHighlight(mIndicesToHighlight[i]);
+//            int entryIndex = set.getEntryIndex(e);
+//
+//            // make sure entry not null
+//            if (e == null || entryIndex > set.getEntryCount() * mAnimator.getPhaseX())
+//                continue;
+//
+//            float[] pos = getMarkerPosition(highlight);
+//
+//            // callbacks to update the content
+//            mMarker.refreshContent(e, highlight);
+//
+//            // draw the marker
+//            mMarker.draw(canvas, pos[0], pos[1]);
+//        }
     }
 
     public SingleBarChartRenderer getSingleBarChartRenderer() {
