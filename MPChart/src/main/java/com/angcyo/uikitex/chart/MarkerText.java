@@ -3,6 +3,7 @@ package com.angcyo.uikitex.chart;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.text.TextUtils;
 import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
@@ -25,6 +26,8 @@ public class MarkerText implements IMarker {
      * 需要绘制文本, null 则使用 y值
      */
     private String drawText = null;
+    //需要自定义绘制的文本
+    private String text = null;
 
     private float textSize = Utils.convertDpToPixel(10);
 
@@ -61,8 +64,8 @@ public class MarkerText implements IMarker {
         paint.setTextSize(textSize);
     }
 
-    public void setDrawText(String drawText) {
-        this.drawText = drawText;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public void setTextSize(float textSize) {
@@ -85,14 +88,19 @@ public class MarkerText implements IMarker {
 
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-        e.getData();
-        if (drawText == null) {
+        if (text == null) {
             drawText = String.valueOf(e.getY());
+        } else {
+            drawText = text;
         }
     }
 
     @Override
     public void draw(Canvas canvas, float posX, float posY) {
+        if (TextUtils.isEmpty(drawText)) {
+            return;
+        }
+
         ensurePaint();
 
         MPPointF offset = getOffsetForDrawingAtPoint(posX, posY);

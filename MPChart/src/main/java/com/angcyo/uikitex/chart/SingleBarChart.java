@@ -2,14 +2,14 @@ package com.angcyo.uikitex.chart;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 
@@ -140,7 +140,10 @@ public class SingleBarChart extends BarChart {
 
                         right = left + barWidth;
 
-                        if (x >= left && x <= right) {
+                        RectF rectF = getSingleBarChartRenderer().calcXY(entry.getX(), entry.getY());
+
+                        if (x - endTranslateX >= left && x - endTranslateX <= right &&
+                                y >= rectF.top && y <= rectF.bottom) {
                             Highlight highlight = new Highlight(entry.getX(), entry.getY(), 0);
                             //y坐标有问题, 不能用
                             highlight.setDraw(left + barWidth / 2, entry.getY());
@@ -156,33 +159,22 @@ public class SingleBarChart extends BarChart {
 
     @Override
     protected void drawMarkers(Canvas canvas) {
-        super.drawMarkers(canvas);
+        try {
+            super.drawMarkers(canvas);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-//        // if there is no marker view or drawing marker is disabled
-//        if (mMarker == null || !isDrawMarkersEnabled() || !valuesToHighlight())
-//            return;
-//
-//        for (int i = 0; i < mIndicesToHighlight.length; i++) {
-//
-//            Highlight highlight = mIndicesToHighlight[i];
-//
-//            IDataSet set = mData.getDataSetByIndex(highlight.getDataSetIndex());
-//
-//            Entry e = mData.getEntryForHighlight(mIndicesToHighlight[i]);
-//            int entryIndex = set.getEntryIndex(e);
-//
-//            // make sure entry not null
-//            if (e == null || entryIndex > set.getEntryCount() * mAnimator.getPhaseX())
-//                continue;
-//
-//            float[] pos = getMarkerPosition(highlight);
-//
-//            // callbacks to update the content
-//            mMarker.refreshContent(e, highlight);
-//
-//            // draw the marker
-//            mMarker.draw(canvas, pos[0], pos[1]);
-//        }
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setData(BarData data) {
+        super.setData(data);
+        highlightValues(null);
     }
 
     public SingleBarChartRenderer getSingleBarChartRenderer() {

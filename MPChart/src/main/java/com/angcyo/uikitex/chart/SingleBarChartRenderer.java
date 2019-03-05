@@ -2,6 +2,7 @@ package com.angcyo.uikitex.chart;
 
 import android.graphics.Canvas;
 import android.graphics.LinearGradient;
+import android.graphics.RectF;
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.buffer.BarBuffer;
 import com.github.mikephil.charting.data.BarData;
@@ -126,6 +127,10 @@ public class SingleBarChartRenderer extends BarChartRenderer {
 
         for (Highlight high : indices) {
 
+            if (high.getDataIndex() == -1) {
+                continue;
+            }
+
             float highDrawX = high.getDrawX();
 
             IBarDataSet set = barData.getDataSetByIndex(high.getDataSetIndex());
@@ -168,9 +173,12 @@ public class SingleBarChartRenderer extends BarChartRenderer {
             prepareBarHighlight(e.getX(), y1, y2, barData.getBarWidth() / 2f, trans);
 
             setHighlightDrawPos(high, mBarRect);
+            float offsetX = singleBarChart.endTranslateX;
 
-            high.setDraw(highDrawX, mBarRect.top);
-            mBarRect.set(highDrawX - getBarWidth() / 2, mBarRect.top, highDrawX + getBarWidth() / 2, mBarRect.bottom);
+            high.setDraw(highDrawX + offsetX, mBarRect.top);
+            mBarRect.set(highDrawX - getBarWidth() / 2 + offsetX, mBarRect.top,
+                    highDrawX + getBarWidth() / 2 + offsetX, mBarRect.bottom);
+
             c.drawRect(mBarRect, mHighlightPaint);
         }
     }
@@ -244,5 +252,28 @@ public class SingleBarChartRenderer extends BarChartRenderer {
         BarData barData = mChart.getBarData();
         float barWidth = barData.getBarWidth();
         return barWidth;
+    }
+
+    /**
+     * 通过entry 的 x y值, 拿到对应 绘制 坐标系的 x y 值(左上角起点)
+     */
+    public RectF calcXY(float x, float y) {
+        BarData barData = mChart.getBarData();
+        if (barData != null && barData.getDataSets().size() > 0) {
+            IBarDataSet set = barData.getDataSetByIndex(0);
+            Transformer trans = mChart.getTransformer(set.getAxisDependency());
+
+            float barWidth = getBarWidth();
+
+            float left = x - barWidth / 2;
+            float right = x + barWidth / 2;
+            float top = y;
+            float bottom = 0;
+
+            mBarRect.set(left, top, right, bottom);
+
+            trans.rectToPixelPhase(mBarRect, mAnimator.getPhaseY());
+        }
+        return mBarRect;
     }
 }

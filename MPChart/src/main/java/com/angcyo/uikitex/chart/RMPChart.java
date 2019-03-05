@@ -65,7 +65,7 @@ public class RMPChart {
     public RMPChart defaultSingleBarChartStyle() {
         this
                 .setTouchEnabled(true)
-                .setHighlightPerTapEnabled(false)
+                .setHighlightPerTapEnabled(true)
                 .setHighlightPerDragEnabled(false)
                 .setDrawBarShadow(false)
                 .setDrawXAxisGridLines(false)
