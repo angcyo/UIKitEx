@@ -659,6 +659,35 @@ public class RMPChart {
     }
 
     /**
+     * 点击之后, 高亮线的颜色
+     */
+    public RMPChart setLineHighLightColor(int color) {
+        tempLineDataSet.setHighLightColor(color);
+        return this;
+    }
+
+    /**
+     * 点击之后, 是否绘制横向的高亮线
+     */
+    public RMPChart setDrawLineHorizontalHighlightIndicator(boolean value) {
+        tempLineDataSet.setDrawHorizontalHighlightIndicator(value);
+        return this;
+    }
+
+    public RMPChart setDrawLineVerticalHighlightIndicator(boolean value) {
+        tempLineDataSet.setDrawVerticalHighlightIndicator(value);
+        return this;
+    }
+
+    /**
+     * 同时控制 横竖 高亮线
+     */
+    public RMPChart setDrawLineHighlightIndicators(boolean value) {
+        tempLineDataSet.setDrawHighlightIndicators(value);
+        return this;
+    }
+
+    /**
      * surface (0-255), default: 85
      */
     public RMPChart setLineFillAlpha(int color) {
