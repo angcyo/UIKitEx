@@ -23,8 +23,8 @@ public class RTbs {
                 }
 
                 @Override
-                public void onViewInitFinished(boolean b) {
-                    L.i("腾讯X5 onViewInitFinished:" + b);
+                public void onViewInitFinished(boolean isX5Core) {
+                    L.i("腾讯X5 onViewInitFinished isX5Core =" + isX5Core);
                 }
             });
 
