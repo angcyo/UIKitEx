@@ -1,0 +1,15 @@
+if (getRootProject().hasProperty("allGradle")) {
+    apply from: allGradle.lib_base
+} else {
+    apply from: '../lib/lib_base.gradle'
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+
+    if (getRootProject().hasProperty("allModule")) {
+        compileOnly project(allModule.UIViewLess)
+    } else {
+        compileOnly project(":UIViewLess")
+    }
+}

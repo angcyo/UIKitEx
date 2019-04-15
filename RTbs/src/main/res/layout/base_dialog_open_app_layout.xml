@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/base_dialog_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/base_xxxhdpi"
+    android:layout_marginRight="@dimen/base_xxxhdpi"
+    android:background="@drawable/base_white_round_bg_5x"
+    android:gravity="start"
+    android:orientation="vertical"
+    android:padding="@dimen/base_xhdpi">
+
+    <com.angcyo.uiview.less.widget.RTextView
+        android:id="@+id/base_dialog_title_view"
+        style="@style/BaseDialogTextStyle"
+        android:layout_margin="0dp"
+        android:gravity="left"
+        android:padding="@dimen/base_xhdpi"
+        android:textSize="@dimen/default_text_size16"
+        android:textStyle="bold"
+        tools:text="对话框标题"/>
+
+    <ImageView
+        android:id="@+id/app_ico_view"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:scaleType="fitCenter"/>
+
+    <com.angcyo.uiview.less.widget.RTextView
+        android:id="@+id/base_dialog_top_content_view"
+        style="@style/BaseDialogTextStyle"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="@dimen/base_ldpi"
+        android:textSize="@dimen/default_text_little_size"
+        android:visibility="gone"
+        tools:text="APP名称"
+        tools:visibility="visible"/>
+
+    <com.angcyo.uiview.less.widget.RTextView
+        android:id="@+id/base_dialog_content_view"
+        style="@style/BaseDialogTextStyle"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="@dimen/base_ldpi"
+        android:textSize="@dimen/default_text_little_size"
+        tools:text="请求打开应用!"/>
+
+    <com.angcyo.uiview.less.widget.SimpleProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/base_ldpi"
+        android:layout_marginBottom="@dimen/base_hdpi_"
+        android:layout_marginTop="@dimen/base_xhdpi"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/base_xhdpi"
+        android:gravity="right"
+        android:orientation="horizontal"
+        tools:background="@android:color/holo_red_dark">
+
+        <TextView
+            android:id="@+id/base_dialog_ex_view"
+            style="@style/BaseButtonStyle"
+            android:layout_marginEnd="@dimen/base_xhdpi"
+            android:background="@drawable/base_round_bg_selector_5x"
+            android:textColor="@color/default_base_border"
+            android:textSize="@dimen/default_text_little_size"
+            android:visibility="gone"
+            tools:text="@string/base_cancel"
+            tools:textColor="@android:color/white"/>
+
+        <TextView
+            android:id="@+id/base_dialog_cancel_view"
+            style="@style/BaseButtonStyle"
+            android:layout_marginEnd="@dimen/base_xhdpi"
+            android:background="@drawable/base_round_bg_selector_5x"
+            android:clickable="true"
+            android:textColor="@color/default_base_border"
+            android:textSize="@dimen/default_text_little_size"
+            tools:text="@string/base_cancel"
+            tools:textColor="@android:color/white"/>
+
+        <TextView
+            android:id="@+id/base_dialog_ok_view"
+            style="@style/BaseButtonStyle"
+            android:background="@drawable/base_round_bg_selector_5x"
+            android:clickable="true"
+            android:textColor="@color/theme_color_accent"
+            android:textSize="@dimen/default_text_little_size"
+            tools:text="@string/base_ok"
+            tools:textColor="@android:color/white"/>
+    </LinearLayout>
+
+</LinearLayout>

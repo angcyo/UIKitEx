@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tip_text_view"
+        style="@style/BaseMainTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#2C3031"
+        android:gravity="center_horizontal"
+        android:paddingTop="80dp"
+        android:text="R•Sen提供技术支持\n来自腾讯TBS X5内核"
+        android:textColor="#707475"
+        android:textSize="@dimen/default_text_size16" />
+
+    <com.angcyo.rtbs.X5RefreshLayout
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.angcyo.rtbs.X5WebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.angcyo.rtbs.X5RefreshLayout>
+
+    <!--<com.angcyo.uiview.widget.EmptyView-->
+    <!--android:id="@+id/empty_view"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:padding="@dimen/base_xxhdpi"/>-->
+
+    <com.angcyo.uiview.widget.SimpleProgressBar
+        android:id="@+id/progress_bar_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.angcyo.uiview.widget.RTextView
+        android:id="@+id/url_view"
+        style="@style/BaseMainTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:textColor="@color/base_red"
+        android:textSize="8dp"
+        android:visibility="gone"
+        tools:text="www.baidu.com"
+        tools:visibility="visible" />
+
+</FrameLayout>

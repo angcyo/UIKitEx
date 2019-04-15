@@ -17,7 +17,6 @@ gradlew.bat
 /RLibrary2
 /RLibrary
 /apk
-/RTbs
 /RJpush
 /jpush
 *.log
@@ -27,6 +26,5 @@ gradlew.bat
 /RHttpServer
 /ble
 /umeng
-/tbs
 /uikit
 /uikitex
