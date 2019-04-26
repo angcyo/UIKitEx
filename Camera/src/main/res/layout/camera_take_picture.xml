@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:background="#80000000">
+
+    <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/camera_take_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="80dp"
+            android:src="@drawable/bd_ocr_take_photo_selector"/>
+
+    <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/camera_light_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="102dp"
+            android:src="@drawable/bd_ocr_light_off"/>
+
+    <FrameLayout
+            android:id="@+id/camera_confirm_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000"
+            android:visibility="gone"
+            android:clickable="true"
+            tools:visibility="visible">
+
+        <ImageView
+                android:id="@+id/camera_display_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"/>
+
+        <ImageView
+                android:id="@+id/camera_cancel_button"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|left"
+                android:layout_marginLeft="40dp"
+                android:layout_marginBottom="40dp"
+                android:padding="12dp"
+                android:src="@drawable/bd_ocr_cancel"/>
+
+        <ImageView
+                android:id="@+id/camera_confirm_button"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|right"
+                android:layout_marginRight="40dp"
+                android:layout_marginBottom="40dp"
+                android:padding="12dp"
+                android:src="@drawable/bd_ocr_confirm"/>
+    </FrameLayout>
+</FrameLayout>
