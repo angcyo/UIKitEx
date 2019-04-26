@@ -13,6 +13,8 @@ import com.angcyo.uiview.less.recycler.RBaseViewHolder;
 import java.io.File;
 
 /**
+ * 简单的拍照Fragment, 带闪光灯, 带拍照确认界面
+ * <p>
  * Email:angcyo@126.com
  *
  * @author angcyo

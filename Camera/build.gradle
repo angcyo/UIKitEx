@@ -1,7 +1,25 @@
 apply from: allGradle.lib_base
 
+android {
+    sourceSets {
+        main {
+            assets.srcDirs = ['src/main/assets',
+                              'src/tesstwo/assets']
+            java.srcDirs = ['src/main/java',
+                            'src/tesstwo/java',
+                            'src/ucrop/java']
+            res.srcDirs = ['src/main/res',
+                           'src/tesstwo/res']
+        }
+    }
+}
+
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
+
+    //https://github.com/tesseract-ocr/tesseract
+    //https://github.com/rmtheis/tess-two
+    api 'com.rmtheis:tess-two:9.0.0'
 
     compileOnly project(allModule.UIViewLess)
 }
