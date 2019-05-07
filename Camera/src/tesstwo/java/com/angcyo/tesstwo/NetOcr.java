@@ -43,7 +43,7 @@ public class NetOcr {
     }
 
     private void initClient() {
-        mOkHttpClient = Http.defaultOkHttpClick("OCR").build();
+        mOkHttpClient = Http.defaultOkHttpClient("OCR").build();
     }
 
     private void getToken() {
