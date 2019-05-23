@@ -5,6 +5,7 @@ import android.util.Base64;
 import android.util.Log;
 import com.angcyo.http.Http;
 import com.angcyo.http.Json;
+import com.angcyo.lib.L;
 import com.angcyo.uiview.less.utils.RUtils;
 import okhttp3.*;
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -180,11 +182,23 @@ public class NetOcr {
 
                     try {
                         String body = response.body().string();
+                        //L.i("百度OCR结果:" + body);
                         JSONObject jsonObject = new JSONObject(body);
-                        String words = jsonObject.getJSONObject("words_result").getJSONObject("公民身份证号码").getString("words");
+
+                        JSONObject wordsResult = jsonObject.getJSONObject("words_result");
+                        Iterator<String> keys = wordsResult.keys();
+
+                        String words = null;
+                        while (keys.hasNext()) {
+                            String next = keys.next();
+                            if (next != null && next.contains("号")) {
+                                words = wordsResult.getJSONObject(next).getString("words");
+                                break;
+                            }
+                        }
                         //L.i("识别结果:"+ words);
 
-                        if (onResultCallback != null) {
+                        if (onResultCallback != null && !TextUtils.isEmpty(words)) {
                             onResultCallback.onResult(null, null, words);
                         }
                     } catch (Exception e) {

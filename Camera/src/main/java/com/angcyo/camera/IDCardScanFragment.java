@@ -36,8 +36,6 @@ public class IDCardScanFragment extends BaseFragment {
     }
 
     public static IDCardScanFragment show(FragmentManager fragmentManager,
-                                          boolean needConfirm,
-                                          File outputFile,
                                           Tesstwo.OnResultCallback onResultCallback
     ) {
         IDCardScanFragment fragment = new IDCardScanFragment();
