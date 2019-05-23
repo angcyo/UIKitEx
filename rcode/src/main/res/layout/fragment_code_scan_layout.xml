@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <SurfaceView
+            android:id="@+id/base_preview_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/default_base_black"/>
+
+    <com.angcyo.rcode.ViewfinderView
+            android:id="@+id/base_viewfinder_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/base_code_tip_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/base_120dpi"
+            android:text="@string/qr_code_scan_tip"
+            android:textColor="@color/default_base_white"
+            android:textSize="12dp"/>
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="@dimen/base_40dpi">
+
+        <com.angcyo.uiview.less.widget.RImageCheckView
+                android:id="@+id/base_light_switch_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/base_light_switch_selector"
+                app:r_tint_color="false"/>
+
+        <android.support.v4.widget.Space
+                android:layout_width="@dimen/base_120dpi"
+                android:layout_height="0dp"/>
+
+        <com.angcyo.uiview.less.widget.RImageCheckView
+                android:id="@+id/base_photo_selector_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/base_photo_album"/>
+
+    </LinearLayout>
+
+</FrameLayout>
