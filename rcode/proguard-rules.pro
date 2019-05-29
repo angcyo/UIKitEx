@@ -24,5 +24,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+#-keep class com.angcyo.rcode.**{*;}
 -keep class net.sourceforge.zbar.**{*;}
 -keep class com.google.zxing.client.android.**{*;}
