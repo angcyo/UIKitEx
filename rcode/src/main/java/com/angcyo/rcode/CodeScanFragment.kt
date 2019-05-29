@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.os.Vibrator
+import android.support.v4.app.FragmentManager
 import android.text.TextUtils
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -24,6 +25,7 @@ import com.angcyo.lib.L
 import com.angcyo.rcode.camera.CameraManager
 import com.angcyo.rcode.encode.QRCodeEncoder.HINTS_DECODE
 import com.angcyo.uiview.less.base.BaseFragment
+import com.angcyo.uiview.less.base.helper.FragmentHelper
 import com.angcyo.uiview.less.recycler.RBaseViewHolder
 import com.angcyo.uiview.less.resources.AnimUtil
 import com.angcyo.uiview.less.skin.SkinHelper
@@ -47,7 +49,7 @@ import java.io.IOException
  * @date 2019/05/23
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
-class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback {
+open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback {
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
 
     }
@@ -106,6 +108,20 @@ class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback {
     }
 
     companion object {
+
+        fun show(
+            fragmentManager: FragmentManager?,
+            onResultCallback: (String) -> Unit = {}
+        ): CodeScanFragment {
+            val fragment = CodeScanFragment()
+            fragment.onScanResult = onResultCallback
+
+            FragmentHelper.build(fragmentManager)
+                .defaultEnterAnim()
+                .showFragment(fragment)
+                .doIt()
+            return fragment
+        }
 
         /**第二层 扫描*/
         private fun scanPictureFun2(scanBitmap: Bitmap): String {
@@ -485,6 +501,17 @@ class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback {
         onScanResult?.invoke(data)
         //重复扫描请调用此方法
         //scanAgain()
+    }
+
+    /**重新扫描*/
+    open fun scanAgain() {
+        restartPreviewAfterDelay(1000L)
+    }
+
+    fun restartPreviewAfterDelay(delayMS: Long) {
+        if (handler != null) {
+            handler?.sendEmptyMessageDelayed(R.id.restart_preview, delayMS)
+        }
     }
 
     /**
