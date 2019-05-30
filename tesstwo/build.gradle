@@ -17,5 +17,10 @@ apply from: allGradle.lib_base
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
 
+    //https://github.com/tesseract-ocr/tesseract
+    //https://github.com/rmtheis/tess-two
+    api 'com.rmtheis:tess-two:9.0.0'
+
+    api project(allModule.Camera)
     compileOnly project(allModule.UIViewLess)
 }

@@ -1,17 +1,16 @@
-package com.angcyo.camera;
+package com.angcyo.tesstwo;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import com.angcyo.camera.preview.IDCardPreview;
 import com.angcyo.camera.preview.TakePicturePreview;
-import com.angcyo.tesstwo.Tesstwo;
 import com.angcyo.uiview.less.base.BaseFragment;
 import com.angcyo.uiview.less.base.helper.FragmentHelper;
 import com.angcyo.uiview.less.recycler.RBaseViewHolder;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
@@ -41,7 +40,6 @@ public class IDCardScanFragment extends BaseFragment {
         IDCardScanFragment fragment = new IDCardScanFragment();
         fragment.onResultCallback = onResultCallback;
         FragmentHelper.build(fragmentManager)
-                .defaultEnterAnim()
                 .showFragment(fragment)
                 .doIt();
         return fragment;

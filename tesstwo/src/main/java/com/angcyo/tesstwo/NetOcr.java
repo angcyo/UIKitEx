@@ -1,5 +1,6 @@
 package com.angcyo.tesstwo;
 
+
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -182,7 +183,7 @@ public class NetOcr {
 
                     try {
                         String body = response.body().string();
-                        //L.i("百度OCR结果:" + body);
+                        L.i("百度OCR结果:" + body);
                         JSONObject jsonObject = new JSONObject(body);
 
                         JSONObject wordsResult = jsonObject.getJSONObject("words_result");
