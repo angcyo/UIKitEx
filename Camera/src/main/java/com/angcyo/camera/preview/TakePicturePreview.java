@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import com.angcyo.camera.PreviewPictureLayoutControl;
 import com.angcyo.camera.R;
 import com.angcyo.camera.control.CameraThreadPool;
 import com.angcyo.camera.control.ICameraControl;
@@ -27,6 +28,7 @@ public class TakePicturePreview extends CameraPreviewView {
 
     ImageView takePhotoButton, lightButton;
 
+    PreviewPictureLayoutControl previewPictureLayoutControl;
 
     OnTakePictureCallback onTakePictureCallback;
 
@@ -64,6 +66,64 @@ public class TakePicturePreview extends CameraPreviewView {
             result = false;
         }
         return result;
+    }
+
+    /**
+     * 拍摄后的照片。需要进行裁剪。有些手机（比如三星）不会对照片数据进行旋转，而是将旋转角度写入EXIF信息当中，
+     * 所以需要做旋转处理。
+     *
+     * @param outputFile 写入照片的文件。
+     * @param data       原始照片数据。
+     * @param rotation   照片exif中的旋转角度。
+     * @return 裁剪好的bitmap。
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static Bitmap crop(File outputFile, byte[] data, int rotation) {
+        try {
+            // BitmapRegionDecoder不会将整个图片加载到内存。
+            BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(data, 0, data.length, true);
+
+            Rect region = new Rect();
+            region.left = 0;
+            region.top = 0;
+            region.right = decoder.getWidth();
+            region.bottom = decoder.getHeight();
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+
+            // 最大图片大小。
+            int maxPreviewImageSize = 2560;
+            int size = Math.min(decoder.getWidth(), decoder.getHeight());
+            size = Math.min(size, maxPreviewImageSize);
+
+            options.inSampleSize = ImageUtil.calculateInSampleSize(options, size, size);
+            options.inScaled = true;
+            options.inDensity = Math.max(options.outWidth, options.outHeight);
+            options.inTargetDensity = size;
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            Bitmap bitmap = decoder.decodeRegion(region, options);
+
+            if (rotation != 0) {
+                // 只能是裁剪完之后再旋转了。有没有别的更好的方案呢？
+                Matrix matrix = new Matrix();
+                matrix.postRotate(rotation);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(
+                        bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+                if (bitmap != rotatedBitmap) {
+                    // 有时候 createBitmap会复用对象
+                    bitmap.recycle();
+                }
+                bitmap = rotatedBitmap;
+            }
+            if (outputFile == null) {
+                return bitmap;
+            }
+
+            saveBitmap(outputFile, bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -119,13 +179,15 @@ public class TakePicturePreview extends CameraPreviewView {
             }
         });
 
+        previewPictureLayoutControl = new PreviewPictureLayoutControl(findViewById(R.id.camera_confirm_layout));
+
         //取消
-        findViewById(R.id.camera_cancel_button).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                findViewById(R.id.camera_confirm_layout).setVisibility(View.GONE);
-            }
-        });
+//        findViewById(R.id.camera_cancel_button).setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                findViewById(R.id.camera_confirm_layout).setVisibility(View.GONE);
+//            }
+//        });
     }
 
     @Override
@@ -142,64 +204,6 @@ public class TakePicturePreview extends CameraPreviewView {
         }
     }
 
-    /**
-     * 拍摄后的照片。需要进行裁剪。有些手机（比如三星）不会对照片数据进行旋转，而是将旋转角度写入EXIF信息当中，
-     * 所以需要做旋转处理。
-     *
-     * @param outputFile 写入照片的文件。
-     * @param data       原始照片数据。
-     * @param rotation   照片exif中的旋转角度。
-     * @return 裁剪好的bitmap。
-     */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private Bitmap crop(File outputFile, byte[] data, int rotation) {
-        try {
-            // BitmapRegionDecoder不会将整个图片加载到内存。
-            BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(data, 0, data.length, true);
-
-            Rect region = new Rect();
-            region.left = 0;
-            region.top = 0;
-            region.right = decoder.getWidth();
-            region.bottom = decoder.getHeight();
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-
-            // 最大图片大小。
-            int maxPreviewImageSize = 2560;
-            int size = Math.min(decoder.getWidth(), decoder.getHeight());
-            size = Math.min(size, maxPreviewImageSize);
-
-            options.inSampleSize = ImageUtil.calculateInSampleSize(options, size, size);
-            options.inScaled = true;
-            options.inDensity = Math.max(options.outWidth, options.outHeight);
-            options.inTargetDensity = size;
-            options.inPreferredConfig = Bitmap.Config.RGB_565;
-            Bitmap bitmap = decoder.decodeRegion(region, options);
-
-            if (rotation != 0) {
-                // 只能是裁剪完之后再旋转了。有没有别的更好的方案呢？
-                Matrix matrix = new Matrix();
-                matrix.postRotate(rotation);
-                Bitmap rotatedBitmap = Bitmap.createBitmap(
-                        bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-                if (bitmap != rotatedBitmap) {
-                    // 有时候 createBitmap会复用对象
-                    bitmap.recycle();
-                }
-                bitmap = rotatedBitmap;
-            }
-            if (outputFile == null) {
-                return bitmap;
-            }
-
-            saveBitmap(outputFile, bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     protected void onTakePicture() {
         cameraControl.takePicture(new ICameraControl.OnTakePictureCallback() {
             @Override
@@ -213,8 +217,7 @@ public class TakePicturePreview extends CameraPreviewView {
                             @Override
                             public void run() {
                                 if (needConfirm) {
-                                    ((ImageView) findViewById(R.id.camera_display_image_view)).setImageBitmap(takePicture);
-                                    findViewById(R.id.camera_confirm_layout).setVisibility(View.VISIBLE);
+                                    previewPictureLayoutControl.showPreview(takePicture);
                                 } else if (onTakePictureCallback != null) {
                                     onTakePictureCallback.onPictureTaken(takePicture, outputFile);
                                 }

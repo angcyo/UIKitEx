@@ -1,0 +1,20 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:id="@+id/activity_recorder_video">
+
+    <com.angcyo.camera.record.SizeSurfaceView
+            android:id="@+id/recorder_view"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <com.angcyo.uiview.less.widget.group.ExpandRecordLayout
+            android:id="@+id/record_control_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    <include layout="@layout/camera_preview_picture"/>
+    <include layout="@layout/camera_preview_video"/>
+
+</FrameLayout>

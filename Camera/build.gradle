@@ -1,6 +1,6 @@
 apply from: allGradle.lib_base
 
-//android {
+android {
 //    sourceSets {
 //        main {
 //            assets.srcDirs = ['src/main/assets',
@@ -12,7 +12,12 @@ apply from: allGradle.lib_base
 //                           'src/tesstwo/res']
 //        }
 //    }
-//}
+    android {
+        defaultConfig {
+            vectorDrawables.useSupportLibrary = true
+        }
+    }
+}
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
