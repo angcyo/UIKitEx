@@ -1,8 +1,8 @@
 package com.angcyo.camera;
 
 import android.view.View;
-import com.angcyo.camera.play.TextureVideoView;
 import com.angcyo.uiview.less.kotlin.ViewExKt;
+import com.angcyo.uiview.less.media.play.TextureVideoView;
 import com.angcyo.uiview.less.utils.RUtils;
 
 import java.io.File;
