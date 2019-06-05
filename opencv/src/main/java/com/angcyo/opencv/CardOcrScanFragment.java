@@ -92,7 +92,7 @@ public class CardOcrScanFragment extends BaseFragment {
             }
         });
     }
-    
+
     /**
      * 震动提醒
      */
