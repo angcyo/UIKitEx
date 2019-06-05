@@ -1,0 +1,12 @@
+apply from: allGradle.lib_base
+apply plugin: 'kotlin-android'
+
+//https://github.com/153437803/CardOCR
+//https://github.com/opencv/opencv
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+
+    api project(allModule.Camera)
+    compileOnly project(allModule.UIViewLess)
+}
