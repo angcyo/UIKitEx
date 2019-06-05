@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
+import com.angcyo.opencv.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,7 +19,7 @@ import java.io.OutputStream;
  */
 public final class EXOCREngine {
 
-    static final String fileName = "zocr0.raw";
+    static final String LIB_FILE_NAME_LIB = "zocr0.lib";
 
     private static final byte[] info = new byte[4096];
     private static final int[] rects = new int[32];
@@ -63,7 +64,8 @@ public final class EXOCREngine {
                 int byteread;
                 final byte[] buffer = new byte[1024];
 
-                final InputStream is = context.getAssets().open(fileName);
+                //final InputStream is = context.getAssets().open(fileName);
+                final InputStream is = context.getResources().openRawResource(R.raw.zocr0);
                 final OutputStream fs = new FileOutputStream(file);// to为要写入sdcard中的文件名称
 
                 while ((byteread = is.read(buffer)) != -1) {
@@ -84,7 +86,7 @@ public final class EXOCREngine {
     public static final boolean InitDict(final Context activity) {
 
         final String path = activity.getCacheDir().getAbsolutePath();
-        final String pathname = path + "/" + fileName;
+        final String pathname = path + "/" + LIB_FILE_NAME_LIB;
 
         // step1: 检测字典是否存在
         boolean okFile = checkFile(activity, pathname);
