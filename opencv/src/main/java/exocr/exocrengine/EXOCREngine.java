@@ -18,7 +18,7 @@ import java.io.OutputStream;
  */
 public final class EXOCREngine {
 
-    static final String fileName = "zocr0.lib";
+    static final String fileName = "zocr0.raw";
 
     private static final byte[] info = new byte[4096];
     private static final int[] rects = new int[32];
