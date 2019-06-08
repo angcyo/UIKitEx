@@ -167,7 +167,6 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
     public void onTakePhoto(byte[] data) {
         L.i("onTakePhoto");
         try {
-            File outputFile = new File(Root.getAppExternalFolder("camera"), Root.createFileName(".jpg"));
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
             int displayOrientation = recordControl.getDisplayOrientation();
@@ -182,6 +181,14 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
                 }
                 bitmap = rotatedBitmap;
             }
+
+            StringBuilder builder = new StringBuilder();
+            builder.append("_s_");
+            builder.append(bitmap.getWidth());
+            builder.append("x");
+            builder.append(bitmap.getHeight());
+            builder.append(".jpg");
+            File outputFile = new File(Root.getAppExternalFolder("camera"), Root.createFileName(builder.toString()));
 
             ExKt.save(bitmap, outputFile.getAbsolutePath(), Bitmap.CompressFormat.JPEG, 70);
             showPhotoPreview(bitmap, outputFile);
