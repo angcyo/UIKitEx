@@ -36,4 +36,14 @@ public class RecordVideoCallback {
     public void onTakeVideo(@NonNull String videoPath) {
 
     }
+
+    @NonNull
+    public Bitmap onTakePhotoBefore(@NonNull Bitmap photo, int width, int height) {
+        return photo;
+    }
+
+    @NonNull
+    public Bitmap onTakePhotoAfter(@NonNull Bitmap photo, int width, int height) {
+        return photo;
+    }
 }

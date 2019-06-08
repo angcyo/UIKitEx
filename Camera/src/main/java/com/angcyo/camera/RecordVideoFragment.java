@@ -182,16 +182,24 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
                 bitmap = rotatedBitmap;
             }
 
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+
             StringBuilder builder = new StringBuilder();
             builder.append("_s_");
-            builder.append(bitmap.getWidth());
+            builder.append(width);
             builder.append("x");
-            builder.append(bitmap.getHeight());
+            builder.append(height);
             builder.append(".jpg");
             File outputFile = new File(Root.getAppExternalFolder("camera"), Root.createFileName(builder.toString()));
 
-            ExKt.save(bitmap, outputFile.getAbsolutePath(), Bitmap.CompressFormat.JPEG, 70);
+            bitmap = callback.onTakePhotoBefore(bitmap, width, height);
+
             showPhotoPreview(bitmap, outputFile);
+
+            bitmap = callback.onTakePhotoAfter(bitmap, width, height);
+
+            ExKt.save(bitmap, outputFile.getAbsolutePath(), Bitmap.CompressFormat.JPEG, 70);
 
 //            Intent mediaScannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 //            Uri fileContentUri = Uri.fromFile(mediaFile);
