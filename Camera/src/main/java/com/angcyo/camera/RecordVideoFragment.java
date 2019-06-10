@@ -27,6 +27,7 @@ import java.io.File;
 
 public class RecordVideoFragment extends BaseFragment implements RecordVideoInterface {
 
+    public RecordVideoCallback callback;
     PreviewPictureLayoutControl previewPictureLayoutControl;
     PreviewVideoLayoutControl previewVideoLayoutControl;
     /**
@@ -35,7 +36,6 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
     int recordTime = 0;
     private SizeSurfaceView recordView;
     private RecordVideoControl recordControl;
-    private RecordVideoCallback callback;
 
     public static RecordVideoFragment show(FragmentManager fragmentManager, RecordVideoCallback callback) {
         RecordVideoFragment fragment = new RecordVideoFragment();
@@ -80,9 +80,11 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
         recordLayout.setListener(new ExpandRecordLayout.OnRecordListener() {
             @Override
             public void onTick(@NotNull ExpandRecordLayout layout) {
-                super.onTick(layout);
-                //拍照
-                recordControl.takePhoto();
+                if (callback.isOnlyTakeVideo) {
+                } else {
+                    //拍照
+                    recordControl.takePhoto();
+                }
             }
 
             @Override
@@ -111,6 +113,7 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
                 super.onExpandStateChange(fromState, toState);
             }
         });
+        recordLayout.setEnableLongPress(!callback.isOnlyTakePhoto);
     }
 
     @Override

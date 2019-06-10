@@ -24,6 +24,16 @@ public class RecordVideoCallback {
     public int minRecordTime = 3;
 
     /**
+     * 仅拍照
+     */
+    public boolean isOnlyTakePhoto = false;
+
+    /**
+     * 仅录像
+     */
+    public boolean isOnlyTakeVideo = false;
+
+    /**
      * 拍照回调
      */
     public void onTakePhoto(@NonNull Bitmap bitmap, @NonNull File outputFile) {

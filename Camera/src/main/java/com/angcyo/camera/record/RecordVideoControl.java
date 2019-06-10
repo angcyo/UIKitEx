@@ -330,7 +330,7 @@ public class RecordVideoControl implements SurfaceHolder.Callback, MediaRecorder
         this.videoPath = videoPath;
         isRecording = true;
         releaseRecorder();
-        mCamera.stopPreview();
+       // mCamera.stopPreview();
         mCamera.unlock();
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setCamera(mCamera);
