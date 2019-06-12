@@ -114,6 +114,14 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
             }
         });
         recordLayout.setEnableLongPress(!callback.isOnlyTakePhoto);
+
+        if (callback.isOnlyTakePhoto) {
+            recordLayout.setDrawTipString("轻触拍照");
+        } else if (callback.isOnlyTakeVideo) {
+            recordLayout.setDrawTipString("长按摄像");
+        } else {
+            recordLayout.setDrawTipString("轻触拍照, 长按摄像");
+        }
     }
 
     @Override
@@ -130,6 +138,9 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
         super.onConfigurationChanged(newConfig);
         baseViewHolder.gone(R.id.camera_confirm_layout);
         baseViewHolder.gone(R.id.video_confirm_layout);
+        if (previewVideoLayoutControl != null) {
+            previewVideoLayoutControl.stop();
+        }
     }
 
     @Override

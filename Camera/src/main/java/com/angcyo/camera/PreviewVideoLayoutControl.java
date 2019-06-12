@@ -26,10 +26,12 @@ public class PreviewVideoLayoutControl {
         parent.setVisibility(View.VISIBLE);
         View cancelButton = parent.findViewById(R.id.video_cancel_button);
         View confirmButton = parent.findViewById(R.id.video_confirm_button);
+        final TextureVideoView videoView = parent.findViewById(R.id.video_view);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                videoView.stop();
                 parent.setVisibility(View.GONE);
                 onCancel.run();
             }
@@ -41,9 +43,13 @@ public class PreviewVideoLayoutControl {
         confirmButton.setTranslationX(-ViewExKt.getDpi(cancelButton) * 100);
         confirmButton.animate().translationX(0).setDuration(300).start();
 
-        final TextureVideoView videoView = parent.findViewById(R.id.video_view);
         videoView.setRepeatPlay(true);
         videoView.setVideoURI(RUtils.getFileUri(RUtils.getApp(), new File(videoPath)));
         videoView.start();
+    }
+
+    public void stop() {
+        final TextureVideoView videoView = parent.findViewById(R.id.video_view);
+        videoView.stop();
     }
 }
