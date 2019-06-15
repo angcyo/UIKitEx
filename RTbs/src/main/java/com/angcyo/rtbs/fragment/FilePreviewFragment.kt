@@ -16,6 +16,7 @@ import com.angcyo.uiview.less.base.helper.FragmentHelper
 import com.angcyo.uiview.less.iview.AffectUI
 import com.angcyo.uiview.less.kotlin.toast_tip
 import com.angcyo.uiview.less.recycler.RBaseViewHolder
+import com.angcyo.uiview.less.resources.ResUtil
 import com.angcyo.uiview.less.widget.SimpleProgressBar
 import com.liulishuo.okdownload.DownloadTask
 
@@ -97,6 +98,10 @@ open class FilePreviewFragment : BaseTitleFragment() {
             if (filePreviewConfig.filePath?.isEmpty() == true) {
             } else {
                 doOpen(filePreviewConfig.filePath)
+            }
+        } else if (toAffect == AffectUI.AFFECT_ERROR) {
+            baseViewHolder.click(ResUtil.getThemeIdentifier(mAttachContext, "base_retry_button", "id")) {
+                switchAffectUI(AffectUI.AFFECT_LOADING)
             }
         }
     }
