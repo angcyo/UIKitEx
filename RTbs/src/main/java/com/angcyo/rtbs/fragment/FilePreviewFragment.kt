@@ -14,6 +14,7 @@ import com.angcyo.rtbs.fragment.X5WebFragment.*
 import com.angcyo.uiview.less.base.BaseTitleFragment
 import com.angcyo.uiview.less.base.helper.FragmentHelper
 import com.angcyo.uiview.less.iview.AffectUI
+import com.angcyo.uiview.less.kotlin.mimeType
 import com.angcyo.uiview.less.kotlin.toast_tip
 import com.angcyo.uiview.less.recycler.RBaseViewHolder
 import com.angcyo.uiview.less.resources.ResUtil
@@ -151,13 +152,11 @@ open class FilePreviewFragment : BaseTitleFragment() {
                     toast_tip("x5内核加载失败, 请稍后重试.")
                     RTbs.log("x5内核加载失败, 请稍后重试.")
                 }
-            } else if (type.startsWith("jp") ||
-                type.startsWith("gif") ||
-                type.startsWith("bmp")
-            ) {
+            } else if (path?.mimeType()?.startsWith("image") == true) {
                 tbsFileRender?.openBitmap(path)
             } else if (type.startsWith("tx") ||
-                type.startsWith("log")
+                type.startsWith("log") ||
+                path?.mimeType()?.startsWith("text") == true
             ) {
                 tbsFileRender?.openText(path)
             } else {
