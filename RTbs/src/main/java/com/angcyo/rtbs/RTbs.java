@@ -20,11 +20,13 @@ public class RTbs {
                 @Override
                 public void onCoreInitFinished() {
                     L.i("腾讯X5 onCoreInitFinished");
+                    log("腾讯X5 onCoreInitFinished");
                 }
 
                 @Override
                 public void onViewInitFinished(boolean isX5Core) {
                     L.i("腾讯X5 onViewInitFinished isX5Core =" + isX5Core);
+                    log("腾讯X5 onViewInitFinished isX5Core =" + isX5Core);
                 }
             });
 
@@ -32,20 +34,26 @@ public class RTbs {
                 @Override
                 public void onDownloadFinish(int i) {
                     L.i("腾讯X5 onDownloadFinish:" + i);
+                    log("腾讯X5 onDownloadFinish:" + i);
                 }
 
                 @Override
                 public void onInstallFinish(int i) {
                     L.i("腾讯X5 onInstallFinish:" + i);
+                    log("腾讯X5 onInstallFinish:" + i);
                 }
 
                 @Override
                 public void onDownloadProgress(int i) {
                     L.i("腾讯X5 onDownloadProgress:" + i);
+                    log("腾讯X5 onDownloadProgress:" + i);
                 }
             });
 
             L.i("腾讯X5 canLoadX5:" + QbSdk.canLoadX5(context) +
+                    " isTbsCoreInited:" + QbSdk.isTbsCoreInited());
+
+            log("腾讯X5 canLoadX5:" + QbSdk.canLoadX5(context) +
                     " isTbsCoreInited:" + QbSdk.isTbsCoreInited());
 
             QbSdk.checkTbsValidity(context);
