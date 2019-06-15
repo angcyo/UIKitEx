@@ -86,8 +86,6 @@ public class RTbs {
     }
 
     public static void log(String log) {
-        if (DEBUG) {
-            RUtils.saveToSDCard("webview.log", log);
-        }
+        RUtils.saveToSDCard("webview.log", log);
     }
 }

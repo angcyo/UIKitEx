@@ -126,7 +126,7 @@ public class X5WebFragment extends BaseTitleFragment {
     //</editor-fold>
 
     @Override
-    public String getFragmentTitle() {
+    public CharSequence getFragmentTitle() {
         return super.getFragmentTitle();
     }
 

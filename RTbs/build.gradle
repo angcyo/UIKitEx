@@ -13,3 +13,5 @@ dependencies {
         compileOnly project(":UIViewLess")
     }
 }
+
+apply plugin: 'kotlin-android'

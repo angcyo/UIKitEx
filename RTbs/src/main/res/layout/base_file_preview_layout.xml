@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+    <FrameLayout
+            android:id="@+id/content_wrap_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    <com.angcyo.uiview.less.widget.SimpleProgressBar
+            android:id="@+id/progress_bar_view"
+            android:layout_width="match_parent"
+            app:r_progress_gradient="true"
+            app:r_progress_auto_hide="true"
+            android:layout_height="wrap_content"/>
+
+</FrameLayout>
