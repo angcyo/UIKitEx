@@ -104,6 +104,11 @@ open class FilePreviewFragment : BaseTitleFragment() {
             baseViewHolder.click(ResUtil.getThemeIdentifier(mAttachContext, "base_retry_button", "id")) {
                 switchAffectUI(AffectUI.AFFECT_LOADING)
             }
+
+            if (affectUI.extraObj is CharSequence) {
+                baseViewHolder.tv(ResUtil.getThemeIdentifier(mAttachContext, "base_error_tip_view", "id"))?.text =
+                    "${affectUI.extraObj}"
+            }
         }
     }
 
@@ -112,6 +117,7 @@ open class FilePreviewFragment : BaseTitleFragment() {
             //
             L.i("无法打开非法路径:$path")
             RTbs.log("无法打开非法路径:$path")
+            switchAffectUI(AffectUI.AFFECT_ERROR, "非法路径:$path")
         } else {
             if (path!!.startsWith("http") || path.startsWith("https")) {
                 downFile(path)
@@ -126,6 +132,7 @@ open class FilePreviewFragment : BaseTitleFragment() {
             //
             L.i("无法打开非法路径:$path")
             RTbs.log("无法打开非法路径:$path")
+            switchAffectUI(AffectUI.AFFECT_ERROR, "非法路径:$path")
             return
         }
 
@@ -147,7 +154,7 @@ open class FilePreviewFragment : BaseTitleFragment() {
                 if (tbsFileRender?.openFile(path, type) == true) {
 
                 } else {
-                    switchAffectUI(AffectUI.AFFECT_ERROR)
+                    switchAffectUI(AffectUI.AFFECT_ERROR, "内核加载失败, 请稍后重试.")
 
                     toast_tip("x5内核加载失败, 请稍后重试.")
                     RTbs.log("x5内核加载失败, 请稍后重试.")
@@ -170,7 +177,7 @@ open class FilePreviewFragment : BaseTitleFragment() {
 
                 toast_tip("不支持的文件格式")
 
-                switchAffectUI(AffectUI.AFFECT_ERROR)
+                switchAffectUI(AffectUI.AFFECT_ERROR, "不支持的文件格式:$type $path")
             }
         }
     }
@@ -201,7 +208,8 @@ open class FilePreviewFragment : BaseTitleFragment() {
                 if (isCompleted) {
                     doOpenFile(task.file?.absolutePath, TbsFileRender.getExtensionName(task.file?.absolutePath))
                 } else {
-                    switchAffectUI(AffectUI.AFFECT_ERROR)
+                    RTbs.log("下载异常:${realCause?.message}")
+                    switchAffectUI(AffectUI.AFFECT_ERROR, "${realCause?.message}")
                 }
             }
         }).id
