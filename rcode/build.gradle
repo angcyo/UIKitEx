@@ -1,5 +1,4 @@
 apply from: allGradle.lib_base
-apply plugin: 'kotlin-android'
 
 dependencies {
     api 'com.google.zxing:core:3.4.0'

@@ -1,5 +1,4 @@
 apply from: allGradle.lib_base
-apply plugin: 'kotlin-android'
 
 //https://github.com/153437803/CardOCR
 //https://github.com/opencv/opencv
