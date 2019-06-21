@@ -99,7 +99,7 @@ public class RWebSocket extends WebSocketAdapter {
     }
 
     /**
-     * 外部调用
+     * 外部调用, ws://116.7.249.36:8083/mqtt
      */
     public void connect(String wsUrl) {
         isReconnect = false;
