@@ -26,6 +26,9 @@ import java.util.concurrent.TimeUnit;
  * 修改时间：2017/12/12 14:01
  * 修改备注：
  * Version: 1.0.0
+ *
+ * 2019-6-21
+ *  compile 'com.neovisionaries:nv-websocket-client:2.8'
  */
 public class RWebSocket extends WebSocketAdapter {
 

@@ -132,6 +132,7 @@ class ListenerManager
             }
 
             mListeners.clear();
+            mCopiedListeners = null;
             mSyncNeeded = true;
         }
     }
@@ -350,6 +351,22 @@ class ListenerManager
             try
             {
                 listener.onTextMessage(mWebSocket, message);
+            }
+            catch (Throwable t)
+            {
+                callHandleCallbackError(listener, t);
+            }
+        }
+    }
+
+
+    public void callOnTextMessage(byte[] data)
+    {
+        for (WebSocketListener listener : getSynchronizedListeners())
+        {
+            try
+            {
+                listener.onTextMessage(mWebSocket, data);
             }
             catch (Throwable t)
             {

@@ -711,6 +711,20 @@ import com.neovisionaries.ws.client.StateManager.CloseInitiator;
  * generate()} method must not exceed 125.
  * </p>
  *
+ * <p>
+ * You can change the names of the {@link java.util.Timer Timer}s that send ping/pong
+ * frames periodically by using {@link #setPingSenderName(String)} and
+ * {@link #setPongSenderName(String)} methods.
+ * </p>
+ *
+ * <blockquote>
+ * <pre style="border-left: solid 5px lightgray;"> <span style="color: green;">// Change the Timers' names.</span>
+ * ws.{@link #setPingSenderName(String)
+ * setPingSenderName}(<span style="color: darkred;">"PING_SENDER"</span>);
+ * ws.{@link #setPongSenderName(String)
+ * setPongSenderName}(<span style="color: darkred;">"PONG_SENDER"</span>);
+ * </blockquote>
+ *
  * <h3>Auto Flush</h3>
  *
  * <p>
@@ -829,6 +843,24 @@ import com.neovisionaries.ws.client.StateManager.CloseInitiator;
  * > // Make this library report an error when the end of the input stream
  * // of the WebSocket connection is reached before a close frame is read.</span>
  * ws.{@link #setMissingCloseFrameAllowed(boolean) setMissingCloseFrameAllowed}(false);</pre>
+ * </blockquote>
+ *
+ * <h3>Direct Text Message</h3>
+ *
+ * <p>
+ * When a text message was received, {@link WebSocketListener#onTextMessage(WebSocket, String)
+ * onTextMessage(WebSocket, String)} is called. The implementation internally converts
+ * the byte array of the text message into a {@code String} object before calling the
+ * listener method. If you want to receive the byte array directly without the string
+ * conversion, call {@link #setDirectTextMessage(boolean)} with {@code true}, and
+ * {@link WebSocketListener#onTextMessage(WebSocket, byte[]) onTextMessage(WebSocket, byte[])}
+ * will be called instead.
+ * </p>
+ *
+ * <blockquote>
+ * <pre style="border-left: solid 5px lightgray;"><span style="color: green;"
+ * > // Receive text messages without string conversion.</span>
+ * ws.{@link #setDirectTextMessage(boolean) setDirectTextMessage}(true);</pre>
  * </blockquote>
  *
  * <h3>Disconnect WebSocket</h3>
@@ -1078,6 +1110,7 @@ public class WebSocket
     private boolean mExtended;
     private boolean mAutoFlush = true;
     private boolean mMissingCloseFrameAllowed = true;
+    private boolean mDirectTextMessage;
     private int mFrameQueueSize;
     private int mMaxPayloadSize;
     private boolean mOnConnectedCalled;
@@ -1178,6 +1211,7 @@ public class WebSocket
         instance.mExtended = mExtended;
         instance.mAutoFlush = mAutoFlush;
         instance.mMissingCloseFrameAllowed = mMissingCloseFrameAllowed;
+        instance.mDirectTextMessage = mDirectTextMessage;
         instance.mFrameQueueSize = mFrameQueueSize;
 
         // Copy listeners.
@@ -1654,6 +1688,61 @@ public class WebSocket
 
 
     /**
+     * Check if text messages are passed to listeners without string conversion.
+     *
+     * <p>
+     * If this method returns {@code true}, when a text message is received,
+     * {@link WebSocketListener#onTextMessage(WebSocket, byte[])
+     * onTextMessage(WebSocket, byte[])} will be called instead of
+     * {@link WebSocketListener#onTextMessage(WebSocket, String)
+     * onTextMessage(WebSocket, String)}. The purpose of this behavior
+     * is to skip internal string conversion which is performed in the
+     * implementation of {@code ReadingThread}.
+     * </p>
+     *
+     * @return
+     *         {@code true} if text messages are passed to listeners without
+     *         string conversion.
+     *
+     * @since 2.6
+     */
+    public boolean isDirectTextMessage()
+    {
+        return mDirectTextMessage;
+    }
+
+
+    /**
+     * Set whether to receive text messages directly as byte arrays without
+     * string conversion.
+     *
+     * <p>
+     * If {@code true} is set to this property, when a text message is received,
+     * {@link WebSocketListener#onTextMessage(WebSocket, byte[])
+     * onTextMessage(WebSocket, byte[])} will be called instead of
+     * {@link WebSocketListener#onTextMessage(WebSocket, String)
+     * onTextMessage(WebSocket, String)}. The purpose of this behavior
+     * is to skip internal string conversion which is performed in the
+     * implementation of {@code ReadingThread}.
+     * </p>
+     *
+     * @param direct
+     *         {@code true} to receive text messages as byte arrays.
+     *
+     * @return
+     *         {@code this} object.
+     *
+     * @since 2.6
+     */
+    public WebSocket setDirectTextMessage(boolean direct)
+    {
+        mDirectTextMessage = direct;
+
+        return this;
+    }
+
+
+    /**
      * Flush frames to the server. Flush is performed asynchronously.
      *
      * @return
@@ -1957,6 +2046,72 @@ public class WebSocket
     public WebSocket setPongPayloadGenerator(PayloadGenerator generator)
     {
         mPongSender.setPayloadGenerator(generator);
+
+        return this;
+    }
+
+
+    /**
+     * Get the name of the {@code Timer} that sends ping frames periodically.
+     *
+     * @return
+     *         The {@code Timer}'s name.
+     *
+     * @since 2.5
+     */
+    public String getPingSenderName()
+    {
+        return mPingSender.getTimerName();
+    }
+
+
+    /**
+     * Set the name of the {@code Timer} that sends ping frames periodically.
+     *
+     * @param name
+     *         A name for the {@code Timer}.
+     *
+     * @return
+     *         {@code this} object.
+     *
+     * @since 2.5
+     */
+    public WebSocket setPingSenderName(String name)
+    {
+        mPingSender.setTimerName(name);
+
+        return this;
+    }
+
+
+    /**
+     * Get the name of the {@code Timer} that sends pong frames periodically.
+     *
+     * @return
+     *         The {@code Timer}'s name.
+     *
+     * @since 2.5
+     */
+    public String getPongSenderName()
+    {
+        return mPongSender.getTimerName();
+    }
+
+
+    /**
+     * Set the name of the {@code Timer} that sends pong frames periodically.
+     *
+     * @param name
+     *         A name for the {@code Timer}.
+     *
+     * @return
+     *         {@code this} object.
+     *
+     * @since 2.5
+     */
+    public WebSocket setPongSenderName(String name)
+    {
+        mPongSender.setTimerName(name);
 
         return this;
     }
