@@ -1,0 +1,11 @@
+apply from: allGradle.lib_base
+
+dependencies {
+    //api fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly project(allModule.UIViewLess)
+
+    //https://jcenter.bintray.com/org/eclipse/paho/org.eclipse.paho.client.mqttv3/
+    api 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.1'
+    //https://jcenter.bintray.com/org/eclipse/paho/org.eclipse.paho.android.service/
+    api 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+}
