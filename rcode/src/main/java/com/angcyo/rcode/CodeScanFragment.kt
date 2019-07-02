@@ -14,7 +14,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.os.Vibrator
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.FragmentManager
 import android.text.TextUtils
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -110,7 +110,7 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
     companion object {
 
         fun show(
-            fragmentManager: FragmentManager?,
+            fragmentManager: androidx.fragment.app.FragmentManager?,
             onResultCallback: (String) -> Unit = {}
         ): CodeScanFragment {
             val fragment = CodeScanFragment()

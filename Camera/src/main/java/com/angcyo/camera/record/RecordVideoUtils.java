@@ -11,7 +11,7 @@ import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
 import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 import android.widget.Toast;
 
 import java.io.IOException;

@@ -2,9 +2,9 @@ package com.angcyo.camera;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import com.angcyo.camera.preview.TakePicturePreview;
 import com.angcyo.uiview.less.base.BaseFragment;
 import com.angcyo.uiview.less.base.helper.FragmentHelper;

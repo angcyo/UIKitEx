@@ -2,7 +2,7 @@ package com.angcyo.rtbs.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import com.angcyo.rtbs.R;
 import com.angcyo.uiview.less.recycler.RBaseViewHolder;

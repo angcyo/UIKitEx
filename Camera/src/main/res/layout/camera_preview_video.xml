@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"/>
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/video_cancel_button"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -27,7 +27,7 @@
             android:layout_marginBottom="60dp"
             app:srcCompat="@drawable/ic_photo_cancel"/>
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/video_confirm_button"
             android:layout_width="60dp"
             android:layout_height="60dp"

@@ -1,6 +1,6 @@
 package com.neovisionaries.ws.client.angcyo;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.neovisionaries.ws.client.WebSocket;
 

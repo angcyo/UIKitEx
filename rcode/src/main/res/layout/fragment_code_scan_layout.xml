@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/base_code_tip_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                 android:src="@drawable/base_light_switch_selector"
                 app:r_tint_color="false"/>
 
-        <android.support.v4.widget.Space
+        <androidx.legacy.widget.Space
                 android:layout_width="@dimen/base_120dpi"
                 android:layout_height="0dp"/>
 
