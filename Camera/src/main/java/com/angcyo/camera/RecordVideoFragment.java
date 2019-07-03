@@ -1,14 +1,17 @@
 package com.angcyo.camera;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
-import android.view.View;
 import com.angcyo.camera.record.RecordVideoControl;
 import com.angcyo.camera.record.RecordVideoInterface;
 import com.angcyo.camera.record.SizeSurfaceView;
@@ -55,13 +58,20 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
     @Override
     protected void initBaseView(@NonNull RBaseViewHolder viewHolder, @Nullable Bundle arguments, @Nullable Bundle savedInstanceState) {
         super.initBaseView(viewHolder, arguments, savedInstanceState);
+        viewHolder.enable(R.id.record_control_layout, false);
+
         viewHolder.itemView.setKeepScreenOn(true);
-        viewHolder.postDelay(360, new Runnable() {
-            @Override
-            public void run() {
-                onDelayInitView();
-            }
-        });
+
+        if (haveCameraPermission()) {
+            viewHolder.postDelay(360, new Runnable() {
+                @Override
+                public void run() {
+                    onDelayInitView();
+                }
+            });
+        } else {
+            requestPermission();
+        }
     }
 
     private void onDelayInitView() {
@@ -78,6 +88,18 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
         ExpandRecordLayout recordLayout = baseViewHolder.v(R.id.record_control_layout);
         recordLayout.setMaxTime(callback.maxRecordTime);
         recordLayout.setListener(new ExpandRecordLayout.OnRecordListener() {
+
+            @Override
+            public boolean onTouchDown() {
+                if (checkPermission()) {
+                    baseViewHolder.enable(R.id.record_control_layout, true);
+                    return true;
+                }
+                baseViewHolder.enable(R.id.record_control_layout, false);
+                requestPermission();
+                return false;
+            }
+
             @Override
             public void onTick(@NotNull ExpandRecordLayout layout) {
                 if (callback.isOnlyTakeVideo) {
@@ -233,5 +255,37 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
                 callback.onTakePhoto(bitmap, outputFile);
             }
         });
+    }
+
+    private boolean haveCameraPermission() {
+        return ActivityCompat.checkSelfPermission(mAttachContext, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * 是否有权限
+     */
+    private boolean checkPermission() {
+        if (haveCameraPermission() &&
+                ActivityCompat.checkSelfPermission(mAttachContext, Manifest.permission.RECORD_AUDIO)
+                        == PackageManager.PERMISSION_GRANTED
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(requireActivity(),
+                new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO},
+                999);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (checkPermission()) {
+            onDelayInitView();
+        }
     }
 }
