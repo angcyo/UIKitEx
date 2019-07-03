@@ -4,14 +4,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
+import androidx.annotation.NonNull;
 import com.github.mikephil.charting.charts.*;
 import com.github.mikephil.charting.components.*;
 import com.github.mikephil.charting.data.*;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.MPPointF;
@@ -32,6 +31,35 @@ import java.util.List;
  */
 public class RMPChart {
     protected Chart chart;
+    protected List<ILineDataSet> lineDataSets;
+    /**
+     * 只用来临时存储变量的值
+     */
+    protected LineDataSet tempLineDataSet = new LineDataSet(null, null);
+    protected List<PieEntry> pieEntries;
+    /**
+     * 只用来保存值
+     */
+    protected PieDataSet tempPieDataSet = new PieDataSet(null, null);
+
+    //<editor-fold desc="NoData 和 description 样式">
+    protected List<IBarDataSet> barDataSets;
+    /**
+     * 只用来临时存储变量的值
+     */
+    protected BarDataSet tempBarDataSet = new BarDataSet(new ArrayList<BarEntry>(), null);
+    protected Float barWidth = null;
+    protected Float groupFromX = null;
+    protected float groupGroupSpace;
+    protected float groupBarSpace;
+    protected List<BaseEntry> entries;
+    protected String label = null;
+    /**
+     * LineChart里面表示线的颜色, 多根线, 对应多个颜色
+     */
+    protected Integer color = null;
+    protected List<Integer> colors = null;
+    protected ValueFormatter valueFormatter;
 
     protected RMPChart(Chart chart) {
         this.chart = chart;
@@ -62,6 +90,10 @@ public class RMPChart {
         setPieSliceSpace(2f);
     }
 
+    //</editor-fold desc="NoData 和 description 样式">
+
+    //<editor-fold desc="横轴 样式方法">
+
     public RMPChart defaultSingleBarChartStyle() {
         this
                 .setTouchEnabled(true)
@@ -75,8 +107,6 @@ public class RMPChart {
                 .setBarWidth(Utils.convertDpToPixel(20f));
         return this;
     }
-
-    //<editor-fold desc="NoData 和 description 样式">
 
     public RMPChart setNoDataStyle(String text, int color) {
         chart.setNoDataText(text);
@@ -194,10 +224,6 @@ public class RMPChart {
         return this;
     }
 
-    //</editor-fold desc="NoData 和 description 样式">
-
-    //<editor-fold desc="横轴 样式方法">
-
     public XAxis getXAxis() {
         if (chart instanceof PieChart) {
             //饼状图 不支持 横轴
@@ -217,6 +243,10 @@ public class RMPChart {
         }
         return this;
     }
+
+    //</editor-fold desc="横轴 样式方法">
+
+    //<editor-fold desc="纵轴 样式方法">
 
     public RMPChart setXAxisPosition(XAxis.XAxisPosition pos) {
         AxisUtil.setAxisPosition(getXAxis(), pos, YAxis.YAxisLabelPosition.OUTSIDE_CHART);
@@ -291,7 +321,7 @@ public class RMPChart {
         return this;
     }
 
-    public RMPChart setXAxisValueFormatter(IAxisValueFormatter formatter) {
+    public RMPChart setXAxisValueFormatter(ValueFormatter formatter) {
         AxisUtil.setAxisValueFormatter(getXAxis(), formatter);
         return this;
     }
@@ -311,10 +341,6 @@ public class RMPChart {
         return this;
     }
 
-    //</editor-fold desc="横轴 样式方法">
-
-    //<editor-fold desc="纵轴 样式方法">
-
     /**
      * 纵轴有2条, 左边和右边.
      */
@@ -326,10 +352,18 @@ public class RMPChart {
         }
     }
 
+    //</editor-fold desc="纵轴 样式方法">
+
+    //<editor-fold desc="样式方法">
+
     public RMPChart setYAxisLeftPosition(XAxis.XAxisPosition pos) {
         AxisUtil.setAxisPosition(getLeftYAxis(), pos, YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         return this;
     }
+
+    //</editor-fold desc="样式方法">
+
+    //<editor-fold desc="图例 相关方法">
 
     public RMPChart setDrawYAxisLeftLine(boolean draw) {
         AxisUtil.setDrawAxisLine(getLeftYAxis(), draw);
@@ -399,7 +433,7 @@ public class RMPChart {
         return this;
     }
 
-    public RMPChart setYAxisLeftValueFormatter(IAxisValueFormatter formatter) {
+    public RMPChart setYAxisLeftValueFormatter(ValueFormatter formatter) {
         AxisUtil.setAxisValueFormatter(getLeftYAxis(), formatter);
         return this;
     }
@@ -419,10 +453,6 @@ public class RMPChart {
         return this;
     }
 
-    //</editor-fold desc="纵轴 样式方法">
-
-    //<editor-fold desc="样式方法">
-
     /**
      * 可以关闭所有手势事件
      */
@@ -430,10 +460,6 @@ public class RMPChart {
         chart.setTouchEnabled(enable);
         return this;
     }
-
-    //</editor-fold desc="样式方法">
-
-    //<editor-fold desc="图例 相关方法">
 
     public RMPChart setLegendEnable(boolean enable) {
         chart.getLegend().setEnabled(enable);
@@ -452,6 +478,10 @@ public class RMPChart {
         chart.getLegend().setVerticalAlignment(value);
         return this;
     }
+
+    //</editor-fold desc="图例 相关方法">
+
+    //<editor-fold desc="LineChart 相关方法">
 
     /**
      * 图例方向
@@ -568,16 +598,6 @@ public class RMPChart {
         return this;
     }
 
-    //</editor-fold desc="图例 相关方法">
-
-    //<editor-fold desc="LineChart 相关方法">
-
-    protected List<ILineDataSet> lineDataSets;
-    /**
-     * 只用来临时存储变量的值
-     */
-    protected LineDataSet tempLineDataSet = new LineDataSet(null, null);
-
     public RMPChart addLineEntry(float x, float y) {
         return addLineEntry(new Entry(x, y));
     }
@@ -636,6 +656,10 @@ public class RMPChart {
         tempLineDataSet.setDrawValues(draw);
         return this;
     }
+
+    //</editor-fold desc="LineChart 相关方法">
+
+    //<editor-fold desc="PieChart 相关方法">
 
     /**
      * @param radius dp
@@ -741,17 +765,6 @@ public class RMPChart {
             lineDataSet.setColors(colors);
         }
     }
-
-    //</editor-fold desc="LineChart 相关方法">
-
-    //<editor-fold desc="PieChart 相关方法">
-
-    protected List<PieEntry> pieEntries;
-
-    /**
-     * 只用来保存值
-     */
-    protected PieDataSet tempPieDataSet = new PieDataSet(null, null);
 
     public RMPChart setDrawPieHoleEnable(boolean enable) {
         if (chart instanceof PieChart) {
@@ -932,6 +945,10 @@ public class RMPChart {
         return this;
     }
 
+    //</editor-fold desc="PieChart 相关方法">
+
+    //<editor-fold desc="BarChart 相关方法">
+
     public RMPChart setDrawPieCenterTextRadiusPercent(float value) {
         if (chart instanceof PieChart) {
             ((PieChart) chart).setCenterTextRadiusPercent(value);
@@ -1003,22 +1020,6 @@ public class RMPChart {
         pieDataSet.setSelectionShift(tempPieDataSet.getSelectionShift());
     }
 
-    //</editor-fold desc="PieChart 相关方法">
-
-    //<editor-fold desc="BarChart 相关方法">
-
-    protected List<IBarDataSet> barDataSets;
-    /**
-     * 只用来临时存储变量的值
-     */
-    protected BarDataSet tempBarDataSet = new BarDataSet(new ArrayList<BarEntry>(), null);
-
-    protected Float barWidth = null;
-
-    protected Float groupFromX = null;
-    protected float groupGroupSpace;
-    protected float groupBarSpace;
-
     /**
      * 在 横轴 中的相对比例
      * Default 0.85f
@@ -1087,21 +1088,17 @@ public class RMPChart {
         return addBarEntry(new BarEntry(x, y, data));
     }
 
-
     public RMPChart addBarEntry(float x, float y, Drawable icon) {
         return addBarEntry(new BarEntry(x, y, icon));
     }
-
 
     public RMPChart addBarEntry(float x, float y, Drawable icon, Object data) {
         return addBarEntry(new BarEntry(x, y, icon, data));
     }
 
-
     public RMPChart addBarEntry(float x, float[] vals) {
         return addBarEntry(new BarEntry(x, vals));
     }
-
 
     public RMPChart addBarEntry(float x, float[] vals, Object data) {
         return addBarEntry(new BarEntry(x, vals, data));
@@ -1110,6 +1107,11 @@ public class RMPChart {
     public RMPChart addBarEntry(float x, float[] vals, Drawable icon) {
         return addBarEntry(new BarEntry(x, vals, icon));
     }
+
+    //</editor-fold desc="BarChart 相关方法">
+
+
+    //<editor-fold desc="公共方法">
 
     public RMPChart addBarEntry(float x, float[] vals, Drawable icon, Object data) {
         return addBarEntry(new BarEntry(x, vals, icon, data));
@@ -1137,7 +1139,6 @@ public class RMPChart {
         }
     }
 
-
     protected void configBarDataSet(BarDataSet barDataSet) {
         try {
             Method copy = BarDataSet.class.getDeclaredMethod("copy", BarDataSet.class);
@@ -1159,21 +1160,6 @@ public class RMPChart {
         }
     }
 
-    //</editor-fold desc="BarChart 相关方法">
-
-
-    //<editor-fold desc="公共方法">
-
-    protected List<BaseEntry> entries;
-    protected String label = null;
-    /**
-     * LineChart里面表示线的颜色, 多根线, 对应多个颜色
-     */
-    protected Integer color = null;
-    protected List<Integer> colors = null;
-
-    protected IValueFormatter valueFormatter;
-
     /**
      * 设置 Label
      */
@@ -1192,7 +1178,7 @@ public class RMPChart {
         return this;
     }
 
-    public RMPChart setValueFormatter(IValueFormatter formatter) {
+    public RMPChart setValueFormatter(ValueFormatter formatter) {
         this.valueFormatter = formatter;
         return this;
     }
@@ -1389,7 +1375,7 @@ public class RMPChart {
             }
         }
 
-        public static void setAxisValueFormatter(AxisBase axis, IAxisValueFormatter formatter) {
+        public static void setAxisValueFormatter(AxisBase axis, ValueFormatter formatter) {
             if (axis != null) {
                 axis.setValueFormatter(formatter);
             }
