@@ -1,0 +1,9 @@
+apply from: allGradle.lib_base
+
+dependencies {
+    compileOnly project(allModule.UIViewLess)
+
+    /*https://docs.agora.io/cn/Video/android_video?platform=Android*/
+    /*https://jcenter.bintray.com/io/agora/rtc/full-sdk/*/
+    api 'io.agora.rtc:full-sdk:2.8.0'
+}
