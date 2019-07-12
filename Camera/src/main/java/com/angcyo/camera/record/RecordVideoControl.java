@@ -22,6 +22,8 @@ import java.util.List;
 /**
  * 录制视频控制类
  * Created by dalong on 2017/1/3.
+ *
+ * https://github.com/dalong982242260/SmallVideoRecording
  */
 
 public class RecordVideoControl implements SurfaceHolder.Callback, MediaRecorder.OnInfoListener,
