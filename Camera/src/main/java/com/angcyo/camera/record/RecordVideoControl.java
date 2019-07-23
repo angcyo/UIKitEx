@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * 录制视频控制类
  * Created by dalong on 2017/1/3.
- *
+ * <p>
  * https://github.com/dalong982242260/SmallVideoRecording
  */
 
@@ -235,25 +235,30 @@ public class RecordVideoControl implements SurfaceHolder.Callback, MediaRecorder
     }
 
     private void handleSurfaceChanged(Camera mCamera) {
-        boolean hasSupportRate = false;
-        List<Integer> supportedPreviewFrameRates = mCamera.getParameters()
-                .getSupportedPreviewFrameRates();
-        if (supportedPreviewFrameRates != null
-                && supportedPreviewFrameRates.size() > 0) {
-            Collections.sort(supportedPreviewFrameRates);
-            for (int i = 0; i < supportedPreviewFrameRates.size(); i++) {
-                int supportRate = supportedPreviewFrameRates.get(i);
+        //帧率兼容
+        if (defaultVideoFrameRate > 0) {
+            boolean hasSupportRate = false;
+            List<Integer> supportedPreviewFrameRates = mCamera.getParameters()
+                    .getSupportedPreviewFrameRates();
+            if (supportedPreviewFrameRates != null
+                    && supportedPreviewFrameRates.size() > 0) {
+                Collections.sort(supportedPreviewFrameRates);
+                for (int i = 0; i < supportedPreviewFrameRates.size(); i++) {
+                    int supportRate = supportedPreviewFrameRates.get(i);
 
-                if (supportRate == 24) {
-                    hasSupportRate = true;
+                    if (supportRate == defaultVideoFrameRate) {
+                        hasSupportRate = true;
+                    }
+                }
+
+                //如果找到了默认的帧率
+                if (hasSupportRate) {
+
+                } else {
+                    //否则使用最低的帧率
+                    defaultVideoFrameRate = supportedPreviewFrameRates.get(0);
                 }
             }
-            if (hasSupportRate) {
-                defaultVideoFrameRate = 10;
-            } else {
-                defaultVideoFrameRate = supportedPreviewFrameRates.get(0);
-            }
-
         }
 
         // 获取相机提供的所有分辨率
