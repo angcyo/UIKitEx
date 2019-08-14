@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.os.Vibrator
-import androidx.fragment.app.FragmentManager
 import android.text.TextUtils
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -71,8 +70,8 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
         }
     }
 
-    override fun getCameraManager(): CameraManager {
-        return cameraManager!!
+    override fun getCameraManager(): CameraManager? {
+        return cameraManager
     }
 
     override fun getHandler(): Handler? {
@@ -88,19 +87,19 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
     }
 
     override fun setResult(resultCode: Int, data: Intent?) {
-
+        activity?.setResult(resultCode, data)
     }
 
     override fun finish() {
-
+        backFragment(false)
     }
 
-    override fun getPackageManager(): PackageManager {
-        return packageManager
+    override fun getPackageManager(): PackageManager? {
+        return mAttachContext.packageManager
     }
 
     override fun startActivity(intent: Intent?) {
-
+        super.startActivity(intent)
     }
 
     override fun drawViewfinder() {
@@ -111,7 +110,7 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
 
         fun show(
             fragmentManager: androidx.fragment.app.FragmentManager?,
-            onResultCallback: (String) -> Unit = {}
+            onResultCallback: (String) -> Boolean = { true }
         ): CodeScanFragment {
             val fragment = CodeScanFragment()
             fragment.onScanResult = onResultCallback
@@ -143,7 +142,8 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
             } catch (e: Exception) {
                 e.printStackTrace()
                 try {
-                    result = reader.decode(BinaryBitmap(GlobalHistogramBinarizer(source)), HINTS_DECODE)
+                    result =
+                        reader.decode(BinaryBitmap(GlobalHistogramBinarizer(source)), HINTS_DECODE)
                     return result.text ?: ""
                 } catch (e: Exception) {
                     return scanPictureFun3(scanBitmap)
@@ -188,14 +188,18 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
                 val pixels = IntArray(width * height)
                 bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
                 source = RGBLuminanceSource(width, height, pixels)
-                result = MultiFormatReader().decode(BinaryBitmap(HybridBinarizer(source)), HINTS_DECODE)
+                result =
+                    MultiFormatReader().decode(BinaryBitmap(HybridBinarizer(source)), HINTS_DECODE)
                 return result!!.text
             } catch (e: Exception) {
                 e.printStackTrace()
                 if (source != null) {
                     try {
                         result =
-                            MultiFormatReader().decode(BinaryBitmap(GlobalHistogramBinarizer(source)), HINTS_DECODE)
+                            MultiFormatReader().decode(
+                                BinaryBitmap(GlobalHistogramBinarizer(source)),
+                                HINTS_DECODE
+                            )
                         return result!!.text
                     } catch (e2: Throwable) {
                         e2.printStackTrace()
@@ -222,8 +226,12 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
             val displayWidth = dm.widthPixels
 
             val opts = BitmapFactory.Options()            //实例位图设置
-            opts.inJustDecodeBounds = true                                        //表示不全将图片加载到内存,而是读取图片的信息2
-            BitmapFactory.decodeFile(filePath, opts)                            //首先读取图片信息,并不加载图片到内存,防止内存泄露
+            opts.inJustDecodeBounds =
+                true                                        //表示不全将图片加载到内存,而是读取图片的信息2
+            BitmapFactory.decodeFile(
+                filePath,
+                opts
+            )                            //首先读取图片信息,并不加载图片到内存,防止内存泄露
             val imageWidth = opts.outWidth                                        //获取图片的宽
             val imageHeight = opts.outHeight                                    //获取图片的高
 
@@ -298,7 +306,11 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
         return R.layout.fragment_code_scan_layout
     }
 
-    override fun initBaseView(viewHolder: RBaseViewHolder, arguments: Bundle?, savedInstanceState: Bundle?) {
+    override fun initBaseView(
+        viewHolder: RBaseViewHolder,
+        arguments: Bundle?,
+        savedInstanceState: Bundle?
+    ) {
         super.initBaseView(viewHolder, arguments, savedInstanceState)
 
         hasSurface = false
@@ -342,7 +354,7 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
      * 打开闪光灯
      */
     protected fun openFlashlight(open: Boolean) {
-        cameraManager!!.setTorch(open)
+        cameraManager.setTorch(open)
     }
 
     /**
@@ -370,7 +382,7 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
             // The activity was paused but not stopped, so the surface still exists. Therefore
             // surfaceCreated() won't be called, so init the camera here.
             //initCamera(surfaceView.holder)
-            initCamera(surfaceView!!.holder)
+            initCamera(surfaceView.holder)
         }
     }
 
@@ -386,7 +398,7 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
         inactivityTimer!!.onPause()
         ambientLightManager!!.stop()
         beepManager!!.close()
-        cameraManager!!.closeDriver()
+        cameraManager.closeDriver()
         //historyManager = null; // Keep for onActivityResult
     }
 
@@ -413,7 +425,13 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
                 cameraManager.openDriver(surfaceHolder)
                 // Creating the handler starts the preview, which can also throw a RuntimeException.
                 if (handler == null) {
-                    handler = CaptureActivityHandler(this, decodeFormats, decodeHints, characterSet, cameraManager)
+                    handler = CaptureActivityHandler(
+                        this,
+                        decodeFormats,
+                        decodeHints,
+                        characterSet,
+                        cameraManager
+                    )
                 }
                 decodeOrStoreSavedBitmap(null, null)
             } catch (ioe: IOException) {
@@ -478,7 +496,8 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
         backFragment(false)
     }
 
-    var onScanResult: ((String) -> Unit)? = null
+    /**返回true, 会关闭界面*/
+    var onScanResult: ((String) -> Boolean)? = null
 
     /**处理扫码返回的结果*/
     override fun handleDecode(data: String?) {
@@ -497,8 +516,12 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
     }
 
     open fun onHandleDecode(data: String) {
-        backFragment(false)
-        onScanResult?.invoke(data)
+        if (onScanResult == null) {
+            backFragment(false)
+        } else if (onScanResult?.invoke(data) == true) {
+            backFragment(false)
+        }
+
         //重复扫描请调用此方法
         //scanAgain()
     }

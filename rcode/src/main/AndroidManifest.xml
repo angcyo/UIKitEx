@@ -2,9 +2,17 @@
           package="com.angcyo.rcode">
 
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application>
-
+        <!--扫一扫-->
+        <activity
+            android:name=".scan.ScanActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|fontScale|smallestScreenSize|density|screenLayout"
+            android:exported="false"
+            android:excludeFromRecents="false"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
