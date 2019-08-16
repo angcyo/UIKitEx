@@ -2,10 +2,12 @@ package com.angcyo.rtbs.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.angcyo.rtbs.DownloadFileBean;
 import com.angcyo.rtbs.R;
 import com.angcyo.uiview.less.recycler.RBaseViewHolder;
