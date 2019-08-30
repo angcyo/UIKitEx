@@ -86,6 +86,7 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
         }
 
         ExpandRecordLayout recordLayout = baseViewHolder.v(R.id.record_control_layout);
+        callback.initConfig();
         recordLayout.setMaxTime(callback.maxRecordTime);
         recordLayout.setListener(new ExpandRecordLayout.OnRecordListener() {
 

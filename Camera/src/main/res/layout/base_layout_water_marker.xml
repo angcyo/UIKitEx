@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--原始图片-->
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/origin_image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@color/base_gray" />
+
+    <!--水印文本1-->
+    <TextView
+        android:id="@+id/water_marker_time"
+        style="@style/BaseMainTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/status_bar_height"
+        android:paddingLeft="@dimen/base_hdpi"
+        android:paddingRight="@dimen/base_hdpi"
+        android:shadowColor="#333333"
+        android:shadowDx="3"
+        android:shadowDy="3"
+        android:shadowRadius="1"
+        android:textColor="@color/white"
+        android:textSize="32px"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/origin_image_view"
+        app:layout_constraintTop_toTopOf="@+id/origin_image_view"
+        tools:text="by angcyo:2019-8-30 10:57:43" />
+
+    <!--水印文本2-->
+    <TextView
+        android:id="@+id/water_marker_des"
+        style="@style/BaseDarkTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/base_hdpi"
+        android:paddingTop="@dimen/base_mdpi"
+        android:paddingRight="@dimen/base_hdpi"
+        android:shadowColor="#333333"
+        android:shadowDx="3"
+        android:shadowDy="3"
+        android:shadowRadius="1"
+        android:textColor="@color/white"
+        android:textSize="26px"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/water_marker_time"
+        tools:text="这里是很长的地址的文本显示，所以这里有文本显示在这里，添加问价显示会影响排版的显示" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

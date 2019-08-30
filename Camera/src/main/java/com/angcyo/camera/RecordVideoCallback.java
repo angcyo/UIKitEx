@@ -33,6 +33,10 @@ public class RecordVideoCallback {
      */
     public boolean isOnlyTakeVideo = false;
 
+    public void initConfig() {
+
+    }
+
     /**
      * 拍照回调
      */
