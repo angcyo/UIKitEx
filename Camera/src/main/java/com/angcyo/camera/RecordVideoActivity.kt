@@ -103,7 +103,7 @@ open class RecordVideoActivity : BasePermissionActivity() {
                             putExtra(KEY_DATA_TYPE, type)
                         })
                         .defaultExitAnim()
-                        .finish()
+                        .finish(false)
                 }
             }
         }
@@ -111,5 +111,13 @@ open class RecordVideoActivity : BasePermissionActivity() {
 
     override fun checkBackPressed(): Boolean {
         return true
+    }
+
+    override fun onBackPressed() {
+        //super.onBackPressed()
+        ActivityHelper
+            .build(this@RecordVideoActivity)
+            .defaultExitAnim()
+            .finish(false)
     }
 }
