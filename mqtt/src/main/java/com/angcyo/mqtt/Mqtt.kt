@@ -166,6 +166,7 @@ class Mqtt(context: Context) {
                 }
 
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                    //客户端会自动处理重连
                     L.e(exception?.message)
                 }
             })
