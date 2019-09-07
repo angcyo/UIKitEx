@@ -23,8 +23,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.angcyo.lib.L;
+import com.angcyo.rcode.scan.FrameDataDecode;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.MultiFormatReader;
@@ -122,7 +123,7 @@ final class DecodeHandler extends Handler {
 //            width = height;
 //            height = tmp;
 //            data = rotatedData;
-//            Log.d(TAG, "数组转换用时: " + (System.currentTimeMillis() - start));
+//            L.d(TAG, "数组转换用时: " + (System.currentTimeMillis() - start));
 //            //--- end
 
 
@@ -131,7 +132,7 @@ final class DecodeHandler extends Handler {
               因此换了C语言, 只需要 35ms左右 速度快了接近 20倍
              */
             data = DecodeHandlerJni.dataHandler(data, data.length, width, height);
-            //Log.d(TAG, "数组转换用时: " + (System.currentTimeMillis() - start));
+            //L.d(TAG, "数组转换用时: " + (System.currentTimeMillis() - start));
             int tmp = width;
             width = height;
             height = tmp;
@@ -174,7 +175,7 @@ final class DecodeHandler extends Handler {
 
         long end = System.currentTimeMillis();
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "处理帧 " + (end - start) + " ms " + mDecoderMode);
+            L.d(TAG, "处理帧 " + (end - start) + " ms " + mDecoderMode);
         }
 
         if ((end - start) < 1_000 && end - lastDecoderTime > 1_000) {
@@ -186,9 +187,11 @@ final class DecodeHandler extends Handler {
         Handler handler = activity.getHandler();
         if (!TextUtils.isEmpty(resultQRcode)) {   // 非空表示识别出结果了。
             if (handler != null) {
-                Log.d(TAG, "解码成功: " + resultQRcode);
+                L.d(TAG, "解码成功: " + resultQRcode);
                 Message message = Message.obtain(handler, R.id.decode_succeeded, resultQRcode);
                 message.sendToTarget();
+
+                FrameDataDecode.decode(data, width, height);
             }
         } else {
             if (handler != null) {

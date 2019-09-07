@@ -320,7 +320,7 @@ open class CodeScanFragment : BaseFragment(), IActivity, SurfaceHolder.Callback 
         cameraManager = CameraManager(mAttachContext.applicationContext)
 
         val view = viewHolder.v<RImageCheckView>(R.id.base_light_switch_view)
-        view.setOnCheckedChangeListener { buttonView, isChecked -> openFlashlight(isChecked) }
+        view?.setOnCheckedChangeListener { buttonView, isChecked -> openFlashlight(isChecked) }
 
         viewHolder.click(R.id.base_photo_selector_view) { onSelectorPhotoClick() }
 

@@ -22,6 +22,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.angcyo.rcode.scan.FrameDataDecode;
+
 @SuppressWarnings("deprecation") // camera APIs
 final class PreviewCallback implements Camera.PreviewCallback {
 
@@ -45,6 +47,7 @@ final class PreviewCallback implements Camera.PreviewCallback {
         Point cameraResolution = configManager.getCameraResolution();
         Handler thePreviewHandler = previewHandler;
         if (cameraResolution != null && thePreviewHandler != null) {
+            FrameDataDecode.previewFormat = camera.getParameters().getPreviewFormat();
             Message message = thePreviewHandler.obtainMessage(previewMessage, cameraResolution.x,
                     cameraResolution.y, data);
             message.sendToTarget();
