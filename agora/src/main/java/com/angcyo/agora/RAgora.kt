@@ -65,9 +65,15 @@ class RAgora(val context: Activity) {
     }
 
     var mRtcEngine: RtcEngine? = null
-    var appid: String = ""
+
+    //Wayto 声网 默认appid https://dashboard.agora.io/projects
+    //APP 证书 9f944e8c86e****fa413c22001b95d4c****0428
+    var appid: String = "960644f3218845e5aef0ab9166256473"
     var logFilePath =
-        Root.createExternalFilePath(RUtils.DEFAULT_LOG_FOLDER_NAME, "agora${Root.createTimeFileName("yyyy-MM-dd")}.log")
+        Root.createExternalFilePath(
+            RUtils.DEFAULT_LOG_FOLDER_NAME,
+            "agora${Root.createTimeFileName("yyyy-MM-dd")}.log"
+        )
     var logFileSize = 10 * 1024  /*10mb*/
     var logFileFilter = LOG_FILTER_INFO
 
@@ -99,7 +105,7 @@ class RAgora(val context: Activity) {
     }
 
     var onError: (err: Int) -> Unit = {
-
+        L.e("发生异常:$it")
     }
 
     fun init(appid: String = this.appid) {
@@ -140,7 +146,12 @@ class RAgora(val context: Activity) {
                     }
                 }
 
-                override fun onFirstRemoteVideoDecoded(uid: Int, width: Int, height: Int, elapsed: Int) {
+                override fun onFirstRemoteVideoDecoded(
+                    uid: Int,
+                    width: Int,
+                    height: Int,
+                    elapsed: Int
+                ) {
                     super.onFirstRemoteVideoDecoded(uid, width, height, elapsed)
                     context.runOnUiThread {
                         onFirstRemoteDecoded(uid, true)
@@ -178,7 +189,11 @@ class RAgora(val context: Activity) {
             })
         } catch (e: Exception) {
             L.e(Log.getStackTraceString(e))
-            throw RuntimeException("NEED TO check rtc sdk init fatal error\n" + Log.getStackTraceString(e))
+            throw RuntimeException(
+                "NEED TO check rtc sdk init fatal error\n" + Log.getStackTraceString(
+                    e
+                )
+            )
         }
 
         mRtcEngine?.apply {
@@ -284,7 +299,13 @@ class RAgora(val context: Activity) {
             surfaceView.setZOrderMediaOverlay(true)
             viewGroup.addView(surfaceView)
             surfaceView.tag = localUserUid
-            mRtcEngine?.setupLocalVideo(VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_FIT, localUserUid))
+            mRtcEngine?.setupLocalVideo(
+                VideoCanvas(
+                    surfaceView,
+                    VideoCanvas.RENDER_MODE_FIT,
+                    localUserUid
+                )
+            )
             mRtcEngine?.startPreview()
         }
     }
