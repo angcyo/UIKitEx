@@ -79,6 +79,7 @@ class RAgora(val context: Activity) {
 
     /**用户唯一标识符*/
     var localUserUid = 0
+    var localUserAccount: String? = null
 
     //所有回调, 就会在主线程进行
 
@@ -238,6 +239,25 @@ class RAgora(val context: Activity) {
         //相同appid的相同channelName的用户, 就会进行通讯.
         checkPermission {
             mRtcEngine?.joinChannel(token, channelName, optionalInfo, uid)
+        }
+    }
+
+    fun joinChannelWithUserAccount(
+        token: String,
+        channelName: String = context.packageName,
+        userAccount: String = "$localUserUid",
+        appid: String = this.appid
+    ) {
+        if (mRtcEngine == null) {
+            init(appid)
+        }
+        checkInit()
+
+        localUserAccount = userAccount
+
+        //相同appid的相同channelName的用户, 就会进行通讯.
+        checkPermission {
+            mRtcEngine?.joinChannelWithUserAccount(token, channelName, userAccount)
         }
     }
 
