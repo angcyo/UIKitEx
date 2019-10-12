@@ -56,7 +56,11 @@ class Mqtt(context: Context) {
         }
 
         if (isConnect()) {
-            return
+            if (TextUtils.equals(url, serverURI)) {
+                return
+            }
+            disconnect()
+            mqttAndroidClient = null
         }
 
         serverURI = url
@@ -214,8 +218,11 @@ class Mqtt(context: Context) {
      * 服务是否连上, 连上之后 [mqttService] 才有值, 否则就是 NPE 了
      * */
     fun isConnect(): Boolean {
-        return mqttAndroidClient?.isConnected == true
+        return try {
+            mqttAndroidClient?.isConnected == true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 }
-
-//public fun Mqtt.
