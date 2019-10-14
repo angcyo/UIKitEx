@@ -1,0 +1,27 @@
+apply from: allGradle.lib_base
+
+android {
+    sourceSets {
+        main {
+            java.srcDirs += 'src/objectbox/java'
+        }
+    }
+}
+
+dependencies {
+    compileOnly project(allModule.UIViewLess)
+
+    //https://docs.objectbox.io/getting-started
+    //https://github.com/objectbox/objectbox-java
+    api "io.objectbox:objectbox-rxjava:$objectboxVersion"
+
+    //kotlin 支持
+    api "io.objectbox:objectbox-kotlin:$objectboxVersion"
+
+    //数据库浏览
+//    debugApi "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
+//    pretestApi "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
+//    releaseApi "io.objectbox:objectbox-android:$objectboxVersion"
+}
+
+apply plugin: 'io.objectbox'
