@@ -1,7 +1,6 @@
 package com.angcyo.objectbox;
 
 import android.content.Context;
-import android.os.Process;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -10,7 +9,6 @@ import androidx.collection.SimpleArrayMap;
 
 import com.angcyo.lib.L;
 import com.angcyo.uiview.less.kotlin.ExKt;
-import com.angcyo.uiview.less.utils.RUtils;
 import com.angcyo.uiview.less.utils.utilcode.utils.FileUtils;
 
 import java.io.File;
@@ -36,8 +34,8 @@ import io.objectbox.exception.DbException;
  */
 public class RBox {
 
-    static SimpleArrayMap<String, BoxStore> boxStoreMap = new SimpleArrayMap<>();
     static final String ERROR_FILE_NAME = "error.log";
+    static SimpleArrayMap<String, BoxStore> boxStoreMap = new SimpleArrayMap<>();
 
     public static void init(@NonNull Context context, @Nullable String dbName, boolean debug) {
         init(context, context.getPackageName(), dbName, debug);
@@ -59,15 +57,19 @@ public class RBox {
 
             Method builder = Class.forName(packageName + ".MyObjectBox").getDeclaredMethod("builder");
 
+            String validName;
+
             if (dbName == null) {
-                dbName = BoxStoreBuilder.DEFAULT_NAME;
+                validName = BoxStoreBuilder.DEFAULT_NAME;
+            } else {
+                validName = dbName;
             }
 
-            dbName = checkDbError(context, dbName);
+            validName = checkDbError(context, validName);
 
             BoxStoreBuilder storeBuilder = (BoxStoreBuilder) builder.invoke(null);
             storeBuilder.androidContext(context);
-            storeBuilder.name(dbName);
+            storeBuilder.name(validName);
 
             if (debug) {
                 storeBuilder.debugFlags(DebugFlags.LOG_TRANSACTIONS_READ | DebugFlags.LOG_TRANSACTIONS_WRITE);
@@ -77,7 +79,7 @@ public class RBox {
             BoxStore boxStore;
 
             File baseDirectory = new File(boxPath(context));
-            File dbDirectory = new File(baseDirectory, dbName);
+            File dbDirectory = new File(baseDirectory, validName);
 
             //默认路径:/data/user/0/包名/files/objectbox/objectbox 文件夹下
             //storeBuilder.baseDirectory()
@@ -97,13 +99,9 @@ public class RBox {
                 if (newFile) {
                     ExKt.save(e, errorFile.getAbsolutePath(), true);
                 }
-                //重启APP
-                RUtils.restart();
 
-                //throw new IllegalArgumentException(e);
-
-                System.exit(0);
-                Process.killProcess(Process.myPid());
+                //换个数据库名字, 重新初始化
+                init(context, packageName, dbName, debug);
             }
         } catch (Exception e) {
             e.printStackTrace();
