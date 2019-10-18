@@ -1,15 +1,9 @@
-if (getRootProject().hasProperty("allGradle")) {
-    apply from: allGradle.lib_base
-} else {
-    apply from: '../lib/lib_base.gradle'
-}
+apply from: allGradle.lib_base
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
 
-    if (getRootProject().hasProperty("allModule")) {
-        compileOnly project(allModule.UIViewLess)
-    } else {
-        compileOnly project(":UIViewLess")
-    }
+    implementation androidx.recyclerview
+
+    implementation project(allModule.UIViewLess)
 }

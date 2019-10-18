@@ -3,7 +3,7 @@ apply from: allGradle.lib_base
 dependencies {
     //3.4.0 需要 minSdkVersion 24
     // https://github.com/zxing/zxing/issues/1170
-    api 'com.google.zxing:core:3.3.3'
-    api 'com.google.zxing:android-core:3.3.0'
-    compileOnly project(allModule.UIViewLess)
+    implementation 'com.google.zxing:core:3.3.3'
+    implementation 'com.google.zxing:android-core:3.3.0'
+    implementation project(allModule.UIViewLess)
 }

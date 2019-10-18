@@ -22,5 +22,5 @@ dependencies {
     api 'com.rmtheis:tess-two:9.0.0'
 
     api project(allModule.Camera)
-    compileOnly project(allModule.UIViewLess)
+    implementation project(allModule.UIViewLess)
 }

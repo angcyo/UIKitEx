@@ -7,5 +7,5 @@ dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
 
     api project(allModule.Camera)
-    compileOnly project(allModule.UIViewLess)
+    implementation project(allModule.UIViewLess)
 }

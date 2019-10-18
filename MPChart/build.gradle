@@ -1,14 +1,12 @@
 apply from: allGradle.lib_base
 
-def _S_VER = hasProperty("S_VER") ? ext.S_VER : '27.1.1'
-
 dependencies {
+    implementation androidx.annotation
+
     //https://github.com/PhilJay/MPAndroidChart
     //https://jitpack.io/com/github/PhilJay/MPAndroidChart/
     //https://jitpack.io/com/github/PhilJay/MPAndroidChart/3.1.0-alpha/
 
     //https://javadoc.jitpack.io/com/github/PhilJay/MPAndroidChart/v3.1.0-alpha/javadoc/
     api 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
-    compileOnly 'com.android.support:appcompat-v7:' + _S_VER
 }
