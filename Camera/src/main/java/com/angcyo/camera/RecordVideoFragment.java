@@ -204,7 +204,9 @@ public class RecordVideoFragment extends BaseFragment implements RecordVideoInte
     public void onTakePhoto(byte[] data) {
         L.i("onTakePhoto");
         try {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length, options);
 
             int displayOrientation = recordControl.getDisplayOrientation();
             if (displayOrientation != 0) {
