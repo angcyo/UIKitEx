@@ -262,10 +262,13 @@ open class DslMqtt {
     //订阅所有
     fun _subscribe() {
         if (_topicList.isNotEmpty()) {
-            _mqttClient?.subscribe(
-                _topicList.map { it.first }.toTypedArray(),
-                _topicList.map { it.second }.toIntArray()
-            )
+
+            val topic = _topicList.map { it.first }.toTypedArray()
+            val qos = _topicList.map { it.second }.toIntArray()
+
+            mqttLog.i("恢复订阅${_mqttClient.hash()}:${topic}:${qos}")
+
+            _mqttClient?.subscribe(topic, qos)
         }
     }
 
@@ -276,6 +279,8 @@ open class DslMqtt {
             val list = ArrayList(_publishList)
 
             list.forEach {
+                mqttLog.i("恢复发送消息${_mqttClient.hash()}:${it.first}:${it.second}")
+
                 _mqttClient?.publish(it.first, it.second)?.actionCallback =
                     object : IMqttActionListener {
                         override fun onSuccess(asyncActionToken: IMqttToken) {
