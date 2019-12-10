@@ -17,6 +17,7 @@ import org.eclipse.paho.client.mqttv3.*
  * https://www.jianshu.com/p/8ba08973a81a
  */
 
+@Deprecated("请使用[DslMqtt]")
 class Mqtt(context: Context) {
 
     val applicationContext: Context = context.applicationContext
