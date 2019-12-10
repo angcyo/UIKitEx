@@ -60,8 +60,7 @@ open class DslMqtt {
     var _serverURI: String? = null
 
     //保存已经订阅的主题
-    val _topicList = mutableListOf<String>()
-    val _topicQos = mutableListOf<Int>()
+    val _topicList = mutableListOf<Pair<String, Int>>()
 
     //</editor-fold desc="属性配置">
 
@@ -75,6 +74,8 @@ open class DslMqtt {
         if (TextUtils.equals(_serverURI, serverURI)) {
             return
         }
+
+        _mqttClient?.disconnect()
 
         _serverURI = serverURI
 
@@ -115,8 +116,7 @@ open class DslMqtt {
         qos为2：“只有一次”，确保消息到达一次。这一级别可用于如下情况，在计费系统中，消息重复或丢失会导致不正确的结果。
         */
 
-        _topicList.add(topic)
-        _topicQos.add(qos)
+        _topicList.add(topic to qos)
 
         return _mqttClient?.subscribe(topic, qos)
     }
@@ -127,13 +127,15 @@ open class DslMqtt {
             return null
         }
 
-        _topicList.addAll(topic)
-        _topicQos.addAll(qos.toTypedArray())
+        topic.forEachIndexed { index, s ->
+            _topicList.add(s to (qos.getOrNull(index) ?: 2))
+        }
 
         return _mqttClient?.subscribe(topic, qos)
     }
 
     fun unsubscribe(topic: String): IMqttToken? {
+        _topicList.removeAll { TextUtils.equals(it.first, topic) }
         return _mqttClient?.unsubscribe(topic)
     }
 
@@ -146,10 +148,13 @@ open class DslMqtt {
 
     /**向主题发送消息*/
     fun publish(
-        topic: String, message: String,
+        topic: String, message: String?,
         qos: Int = 2,
         retained: Boolean = false
     ): IMqttDeliveryToken? {
+        if (message.isNullOrEmpty()) {
+            return null
+        }
         return publish(topic, message.toByteArray(), qos, retained)
     }
 
@@ -177,12 +182,7 @@ open class DslMqtt {
     /**连接完成回调*/
     var onConnectComplete: (client: MqttAndroidClient, reconnect: Boolean, serverURI: String) -> Unit =
         { client, _, _ ->
-            val disconnectedBufferOptions = DisconnectedBufferOptions()
-            disconnectedBufferOptions.isBufferEnabled = true
-            disconnectedBufferOptions.bufferSize = 4096
-            disconnectedBufferOptions.isPersistBuffer = true
-            disconnectedBufferOptions.isDeleteOldestMessages = true
-            client.setBufferOpts(disconnectedBufferOptions)
+            _setBufferOpts(client)
         }
 
     /**连接失败回调*/
@@ -197,21 +197,32 @@ open class DslMqtt {
 
     //<editor-fold desc="内置回调">
 
+    fun _setBufferOpts(client: MqttAndroidClient) {
+        val disconnectedBufferOptions = DisconnectedBufferOptions()
+        disconnectedBufferOptions.isBufferEnabled = true
+        disconnectedBufferOptions.bufferSize = 4096
+        disconnectedBufferOptions.isPersistBuffer = true
+        disconnectedBufferOptions.isDeleteOldestMessages = true
+        client.setBufferOpts(disconnectedBufferOptions)
+    }
+
     //取消所有订阅
     fun _unsubscribe() {
 
         if (_topicList.isNotEmpty()) {
-            _mqttClient?.unsubscribe(_topicList.toTypedArray())
+            _mqttClient?.unsubscribe(_topicList.map { it.first }.toTypedArray())
         }
 
         _topicList.clear()
-        _topicQos.clear()
     }
 
     //订阅所有
     fun _subscribe() {
         if (_topicList.isNotEmpty()) {
-            _mqttClient?.subscribe(_topicList.toTypedArray(), _topicQos.toIntArray())
+            _mqttClient?.subscribe(
+                _topicList.map { it.first }.toTypedArray(),
+                _topicList.map { it.second }.toIntArray()
+            )
         }
     }
 
