@@ -59,8 +59,11 @@ open class DslMqtt {
     //连接的服务器地址
     var _serverURI: String? = null
 
-    //保存已经订阅的主题
+    //保存已经订阅的主题(重连后恢复)
     val _topicList = mutableListOf<Pair<String, Int>>()
+
+    //保存需要发送的消息(未连接时, 需要发送的消息)
+    val _publishList = mutableListOf<Pair<String, MqttMessage>>()
 
     //</editor-fold desc="属性配置">
 
@@ -92,8 +95,14 @@ open class DslMqtt {
     open fun disconnect() {
         _unsubscribe()
         _mqttClient?.disconnect()
-        _mqttClient = null
         _serverURI = null
+    }
+
+    /**释放Service*/
+    fun release() {
+        disconnect()
+        _mqttClient?.close()
+        _mqttClient = null
     }
 
     /**返回是否已连接*/
@@ -118,7 +127,12 @@ open class DslMqtt {
 
         _topicList.add(topic to qos)
 
-        return _mqttClient?.subscribe(topic, qos)
+        return try {
+            mqttLog.i("订阅${_mqttClient.hash()}:$topic:$qos")
+            _mqttClient?.subscribe(topic, qos)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     /**批量订阅*/
@@ -131,19 +145,34 @@ open class DslMqtt {
             _topicList.add(s to (qos.getOrNull(index) ?: 2))
         }
 
-        return _mqttClient?.subscribe(topic, qos)
+        return try {
+            mqttLog.i("订阅${_mqttClient.hash()}:$topic:$qos")
+            _mqttClient?.subscribe(topic, qos)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun unsubscribe(topic: String): IMqttToken? {
         _topicList.removeAll { TextUtils.equals(it.first, topic) }
-        return _mqttClient?.unsubscribe(topic)
+        return try {
+            mqttLog.i("取消订阅${_mqttClient.hash()}:$topic")
+            _mqttClient?.unsubscribe(topic)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun unsubscribe(topic: Array<String>): IMqttToken? {
         if (topic.isEmpty()) {
             return null
         }
-        return _mqttClient?.unsubscribe(topic)
+        return try {
+            mqttLog.i("取消订阅${_mqttClient.hash()}:$topic")
+            _mqttClient?.unsubscribe(topic)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     /**向主题发送消息*/
@@ -163,11 +192,25 @@ open class DslMqtt {
         qos: Int = 2,
         retained: Boolean = false
     ): IMqttDeliveryToken? {
-        return _mqttClient?.publish(topic, payload, qos, retained)
+
+        val message = MqttMessage(payload)
+        message.qos = qos
+        message.isRetained = retained
+
+        return publish(topic, message)
     }
 
     fun publish(topic: String, message: MqttMessage): IMqttDeliveryToken? {
-        return _mqttClient?.publish(topic, message)
+        if (isConnected()) {
+
+            mqttLog.i("发送消息${_mqttClient.hash()}:$topic:$message")
+
+            return _mqttClient?.publish(topic, message)
+        }
+
+        _publishList.add(topic to message)
+
+        return null
     }
 
     //</editor-fold desc="可操作方法">
@@ -226,6 +269,30 @@ open class DslMqtt {
         }
     }
 
+    //发送所有离线缓存的消息
+    fun _publish() {
+        if (_publishList.isNotEmpty()) {
+
+            val list = ArrayList(_publishList)
+
+            list.forEach {
+                _mqttClient?.publish(it.first, it.second)?.actionCallback =
+                    object : IMqttActionListener {
+                        override fun onSuccess(asyncActionToken: IMqttToken) {
+                            _publishList.remove(it)
+                        }
+
+                        override fun onFailure(
+                            asyncActionToken: IMqttToken,
+                            exception: Throwable
+                        ) {
+                            //no op
+                        }
+                    }
+            }
+        }
+    }
+
     fun Any?.hash(): String {
         return this?.hashCode()?.toString(16) ?: "0x0"
     }
@@ -239,10 +306,11 @@ open class DslMqtt {
          * */
         override fun connectComplete(reconnect: Boolean, serverURI: String) {
             mqttLog.i("连接完成${_mqttClient.hash()}:$serverURI 重连:$reconnect")
+            _subscribe()
+            _publish()
             _mqttClient?.let {
                 onConnectComplete(it, reconnect, serverURI)
             }
-            _subscribe()
         }
 
         /**收到消息回调*/
