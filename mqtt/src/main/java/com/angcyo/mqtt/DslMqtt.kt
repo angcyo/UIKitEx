@@ -94,7 +94,11 @@ open class DslMqtt {
     /**断开mqtt*/
     open fun disconnect() {
         _unsubscribe()
-        _mqttClient?.disconnect()
+        try {
+            _mqttClient?.disconnect()
+        } catch (e: Exception) {
+            //no op
+        }
         _serverURI = null
     }
 
