@@ -78,7 +78,11 @@ open class DslMqtt {
             return
         }
 
-        _mqttClient?.disconnect()
+        try {
+            _mqttClient?.disconnect()
+        } catch (e: Exception) {
+            //no op
+        }
 
         _serverURI = serverURI
 
